@@ -1,0 +1,29 @@
+Package: dpdeploy
+Title: A package to manage deployment of data products
+Version: 0.0.0.9012
+Authors@R: 
+    c(
+    person("Afshin", "Mashadi-Hossein", email = "amashadihossein@gmail.com", 
+    role = c("aut", "cre")),
+    person("Yue", "Jiang", email = "rivehill@gmail.com", role = c("aut")))
+Description: An R package to manage deployment of data product to remote.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Imports: 
+    magrittr,
+    dplyr,
+    aws.s3,
+    aws.signature,
+    Rlabkey,
+    glue,
+    pins (== 0.4.4.9008),
+    ellipsis,
+    yaml,
+    fs,
+    purrr,
+    dpbuild,
+    cli,
+    git2r
