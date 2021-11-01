@@ -41,7 +41,6 @@ vignettes/*.pdf
 # Rsconnect
 rsconnect/
 inst/doc
-doc
 Meta
 
 # For mac users
@@ -50,7 +49,6 @@ Meta
 # In case accidentally committing data
 *.zip
 .Rproj.user
-docs
 
 # daap
 .daap/
