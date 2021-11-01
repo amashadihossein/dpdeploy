@@ -19,7 +19,7 @@ Imports:
     aws.signature,
     Rlabkey,
     glue,
-    pins (== 0.4.4.9008),
+    pins (== 0.4.5.9001),
     ellipsis,
     yaml,
     fs,
@@ -27,3 +27,6 @@ Imports:
     dpbuild,
     cli,
     git2r
+Remotes:  
+    amashadihossein/pins,
+    amashadihossein/dpbuild
