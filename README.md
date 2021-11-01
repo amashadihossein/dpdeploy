@@ -17,14 +17,13 @@ is deployed to a remote data platform or repository.
 For released version
 
 ``` r
-remotes::install_git(url = "https://github.com/amashadihossein/dpdeploy.git")
+remotes::install_github("amashadihossein/dpdeploy")
 ```
 
 For dev version
 
 ``` r
-remotes::install_git(url = "https://github.com/amashadihossein/dpdeploy.git",
-                     ref = "dev")
+remotes::install_github("amashadihossein/dpdeploy", ref = "dev")
 ```
 
 ## Example

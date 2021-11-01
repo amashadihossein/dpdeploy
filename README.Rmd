@@ -27,14 +27,13 @@ deployed to a remote data platform or repository.
 For released version
 
 ```{r isntall, eval=FALSE}
-remotes::install_git(url = "https://github.com/amashadihossein/dpdeploy.git")
+remotes::install_github("amashadihossein/dpdeploy")
 ```
 
 For dev version 
 
 ```{r isntall_dev, eval=FALSE}
-remotes::install_git(url = "https://github.com/amashadihossein/dpdeploy.git",
-                     ref = "dev")
+remotes::install_github("amashadihossein/dpdeploy", ref = "dev")
 ```
 
 

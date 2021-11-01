@@ -30,3 +30,4 @@ Imports:
 Remotes:  
     amashadihossein/pins,
     amashadihossein/dpbuild
+BugReports: https://github.com/amashadihossein/dpdeploy/issues
