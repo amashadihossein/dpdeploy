@@ -102,6 +102,7 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
                        versions = TRUE,
                        key = aws_creds$key,
                        secret = aws_creds$secret,
+                       region = conf$board_params$region,
                        path = "daap")
 
   # This is force data.txt sync prior to pinning to address pins bug where 

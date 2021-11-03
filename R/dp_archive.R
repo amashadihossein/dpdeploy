@@ -109,6 +109,7 @@ dp_archiveCore.s3_board <- function(conf, dp_name, pin_version,
                        versions = TRUE,
                        key = aws_creds$key,
                        secret = aws_creds$secret,
+                       region = conf$board_params$region,
                        path = "daap")
   
   # This is force data.txt sync prior to pinning to address pins bug where 
