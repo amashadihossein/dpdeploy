@@ -9,9 +9,11 @@ get_pin_version(d, pin_name, pin_description)
 \arguments{
 \item{d}{data object}
 
-\item{pin_name}{what the pin will be named. For data products, it is encoded in dp_param}
+\item{pin_name}{what the pin will be named. For data products, it is encoded
+in dp_param}
 
-\item{pin_description}{what the pin description will be. For data products, it is encoded in dp_params}
+\item{pin_description}{what the pin description will be. For data products,
+it is encoded in dp_params}
 }
 \value{
 a character version
