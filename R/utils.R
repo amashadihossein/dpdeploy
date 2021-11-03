@@ -73,9 +73,23 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
     stop(cli::format_error(glue::glue("dpboard is not pointing to daap ",
                                       "subfolder on remote. Check board.")))
   
-  dpboard_log <- try(pins::pin_get(name = "dpboard-log",
-                                   board = conf$board_params$board_alias,
-                                   files = F, cache = F))
+  dpboard_log <-  tryCatch(expr = {
+    pins::pin_get(name = "dpboard-log",
+                  board = conf$board_params$board_alias, 
+                  files = F, cache = F)}, 
+    error = function(er){
+      msg <- conditionMessage(er)
+      # msg_frmt <- cli::format_message(glue::glue("Failed to find/pull ",
+      #                                            "dpboard-log: {msg}"))
+      # # TODO: this verbose can never be passed. Harmonize how verbose is
+      # # handled across all functions
+      # if(verbose)
+      #   message(msg_frmt)
+      
+      invisible(structure(msg, class = "try-error"))
+    })
+  
+  
   if(!"data.frame" %in% class(dpboard_log))
     dpboard_log <- NULL
   
@@ -166,8 +180,10 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
 #' @title Get Pins Version Pre Deploy
 #' @description  This get the pins version pre-deploy
 #' @param d data object
-#' @param pin_name what the pin will be named. For data products, it is encoded in dp_param
-#' @param pin_description what the pin description will be. For data products, it is encoded in dp_params
+#' @param pin_name what the pin will be named. For data products, it is encoded 
+#' in dp_param
+#' @param pin_description what the pin description will be. For data products, 
+#' it is encoded in dp_params
 #' @return a character version
 #' @importFrom dplyr .data
 #' @keywords internal
