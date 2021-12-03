@@ -1,33 +1,38 @@
 Package: dpdeploy
 Title: A package to manage deployment of data products
 Version: 0.0.0.9012
-Authors@R: 
-    c(
-    person("Afshin", "Mashadi-Hossein", email = "amashadihossein@gmail.com", 
-    role = c("aut", "cre")),
-    person("Yue", "Jiang", email = "rivehill@gmail.com", role = c("aut")))
+Authors@R: c(
+    person("Afshin", "Mashadi-Hossein", , "amashadihossein@gmail.com", role = c("aut", "cre")),
+    person("Yue", "Jiang", , "rivehill@gmail.com", role = "aut")
+  )
 Description: An R package to manage deployment of data product to remote.
 License: GPL-3
+BugReports: https://github.com/amashadihossein/dpdeploy/issues
+Imports: 
+    aws.s3,
+    aws.signature,
+    cli,
+    dpbuild,
+    dplyr,
+    ellipsis,
+    fs,
+    git2r,
+    glue,
+    lifecycle,
+    magrittr,
+    pins (== 0.4.5.9001),
+    purrr,
+    Rlabkey,
+    rlang (>= 0.4.11),
+    withr,
+    yaml
+Suggests: 
+    covr,
+    roxygen2
+Remotes: 
+    amashadihossein/dpbuild,
+    amashadihossein/pins
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Imports: 
-    magrittr,
-    dplyr,
-    aws.s3,
-    aws.signature,
-    Rlabkey,
-    glue,
-    pins (== 0.4.5.9001),
-    ellipsis,
-    yaml,
-    fs,
-    purrr,
-    dpbuild,
-    cli,
-    git2r
-Remotes:  
-    amashadihossein/pins,
-    amashadihossein/dpbuild
-BugReports: https://github.com/amashadihossein/dpdeploy/issues
