@@ -122,15 +122,30 @@ init_board.s3_board <- function(conf) {
     aws_secret = aws_creds$secret
   )
 
-  pins::board_register_s3(
-    name = get_inputboard_alias(conf),
+  #pins::board_register_s3(
+  #  name = get_inputboard_alias(conf),
+  #  bucket = input_params$bucket_name,
+  #  key = input_params$aws_key,
+  #  secret = input_params$aws_secret,
+  #  path = "dpinput",
+  #  region = input_params$region,
+  #  versions = TRUE
+  #)
+
+  pins::board_s3(
     bucket = input_params$bucket_name,
-    key = input_params$aws_key,
-    secret = input_params$aws_secret,
-    path = "dpinput",
+    prefix = "dpinput",
+    versioned = TRUE,
+    access_key = input_params$aws_key,
+    secret_access_key = input_params$aws_secret,
+    session_token = NULL,
+    credential_expiration = NULL,
+    profile = NULL,
     region = input_params$region,
-    versions = TRUE
+    endpoint = NULL,
+    cache = NULL
   )
+
 }
 
 #' @keywords internal
