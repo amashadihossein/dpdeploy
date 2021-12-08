@@ -86,14 +86,29 @@ init_board <- function(conf) {
 init_board.labkey_board <- function(conf) {
   input_params <- conf$board_params
   input_params$api_key <- conf$creds$api_key
-  pins::board_register(
-    board = "labkey",
-    name = get_inputboard_alias(conf),
-    api_key = input_params$api_key,
-    base_url = input_params$url,
-    folder = input_params$folder,
-    path = "dpinput",
-    versions = TRUE
+
+  #pins::board_s3(
+  #  board = "labkey",
+  #  name = get_inputboard_alias(conf),
+  #  api_key = input_params$api_key,
+  #  base_url = input_params$url,
+  #  folder = input_params$folder,
+  #  path = "dpinput",
+  #  versions = TRUE
+  #)
+
+  pins::board_s3(
+    bucket = "labkey",
+    prefix = NULL,
+    versioned = TRUE,
+    access_key = NULL,
+    secret_access_key = NULL,
+    session_token = NULL,
+    credential_expiration = NULL,
+    profile = NULL,
+    region = NULL,
+    endpoint = NULL,
+    cache = NULL
   )
 }
 

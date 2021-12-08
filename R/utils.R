@@ -221,20 +221,21 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
 #' @return a character version
 #' @importFrom dplyr .data
 #' @keywords internal
-get_pin_version <- function(d, pin_name, pin_description) {
-  pin_name <- as.character(pin_name)
-  pin_description <- as.character(pin_description)
 
-  pins::board_register_local(name = "daap_internal", version = T)
+#get_pin_version <- function(d, pin_name, pin_description) {
+#  pin_name <- as.character(pin_name)
+#  pin_description <- as.character(pin_description)
+
+#  pins::board_register_local(name = "daap_internal", version = T)
 
 
-  pins::pin_remove(name = pin_name, board = "daap_internal")
-  pins::pin(
-    x = d,
-    name = pin_name,
-    board = "daap_internal",
-    description = pin_description
-  )
+#  pins::pin_remove(name = pin_name, board = "daap_internal")
+#  pins::pin(
+#    x = d,
+#    name = pin_name,
+#    board = "daap_internal",
+#    description = pin_description
+#  )
 
   pin_version <- pins::pin_versions(
     name = pin_name,
