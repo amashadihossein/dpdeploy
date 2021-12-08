@@ -219,6 +219,7 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, verbose) {
     }
 
     if (!input_i$metadata$id %in% skip_sync & !input_i$metadata$synced) {
+      #TODO
       tmp_pind <- try(pins::pin(
         x = input_i$data,
         name = input_i$metadata$name,

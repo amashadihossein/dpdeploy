@@ -84,6 +84,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
 
   dpboard_log <- tryCatch(
     expr = {
+      #TODO
       pins::pin_get(
         name = "dpboard-log",
         board = conf$board_params$board_alias,
@@ -151,6 +152,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
       board = conf$board_params$board_alias
     )
 
+    #TODO
     pins::pin(
       x = dpboard_log,
       name = "dpboard-log",
@@ -200,6 +202,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
     name = "dpboard-log",
     board = conf$board_params$board_alias
   )
+  #TODO
   pins::pin(
     x = dpboard_log,
     name = "dpboard-log",
@@ -242,6 +245,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
     board = "daap_internal",
     full = F
   ) %>% dplyr::pull(.data$version)
+  #TODO
   pins::pin_remove(name = pin_name, board = "daap_internal")
 
   return(pin_version)

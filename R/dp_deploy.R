@@ -70,6 +70,7 @@ dp_deployCore.labkey_board <- function(conf, project_path, d, dlog, git_info,
     board = conf$board_params$board_alias
   )
 
+  #TODO
   pins::pin(
     x = d,
     name = attr(d, "dp_name"),
@@ -127,6 +128,7 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
     board = conf$board_params$board_alias
   )
 
+  #TODO
   pins::pin(
     x = d,
     name = as.character(attr(d, "dp_name")),

@@ -81,6 +81,7 @@ dp_archiveCore.labkey_board <- function(conf, dp_name, pin_version,
     board = conf$board_params$board_alias
   )
 
+  #TODO
   pins::pin_remove(name = dp_name, board = conf$board_params$board_alias)
 
 
@@ -138,6 +139,7 @@ dp_archiveCore.s3_board <- function(conf, dp_name, pin_version,
     board = conf$board_params$board_alias
   )
 
+  #TODO
   pins::pin_remove(name = dp_name, board = conf$board_params$board_alias)
 
 
