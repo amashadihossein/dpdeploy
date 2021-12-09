@@ -11,16 +11,19 @@
 
 dpinput_sync <- function(conf, input_map, verbose = F, ...) {
   if (verbose) {
-    cli::cli_alert_info(glue::glue(
-      "Starting sync to the",
-      "{conf$board_params$board_type} remote: ",
-      "{conf$board_params$board_alias}"
-    ))
+    cli::cli_alert_info(
+      glue::glue(
+        "Starting sync to the",
+        "{conf$board_params$board_type} remote: ",
+        "{conf$board_params$board_alias}"
+      )
+    )
   }
 
   skip_sync <- input_map$input_manifest %>%
-    dplyr::filter(.data$to_be_synced == FALSE | .data$synced == TRUE &
-      .data$to_be_synced == TRUE) %>%
+    dplyr::filter(.data$to_be_synced == FALSE |
+                    .data$synced == TRUE &
+                    .data$to_be_synced == TRUE) %>%
     dplyr::pull(.data$id)
 
   to_be_synced <- setdiff(names(input_map$input_obj), skip_sync)
@@ -33,18 +36,22 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
   }
 
   # Add pin version and description
-  input_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
-    if (!input_i$metadata$id %in% skip_sync) {
-      input_i$metadata$description <- to_description(input_i = input_i)
-      input_i$metadata$pin_version <-
-        get_pin_version(
-          d = input_i$data,
-          pin_name = input_i$metadata$name,
-          pin_description = input_i$metadata$description
-        )
-    }
-    input_i
-  })
+  input_map <-
+    purrr::map(
+      .x = input_map$input_obj,
+      .f = function(input_i) {
+        if (!input_i$metadata$id %in% skip_sync) {
+          input_i$metadata$description <- to_description(input_i = input_i)
+          input_i$metadata$pin_version <-
+            get_pin_version(
+              d = input_i$data,
+              pin_name = input_i$metadata$name,
+              pin_description = input_i$metadata$description
+            )
+        }
+        input_i
+      }
+    )
 
 
   init_board(conf = conf)
@@ -59,7 +66,8 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
   synced_map <- syncedmap_rename(synced_map = synced_map)
 
 
-  was_synced <- purrr::map(to_be_synced,
+  was_synced <- purrr::map(
+    to_be_synced,
     .f = function(di) {
       purrr::pluck(synced_map, di, "metadata", "synced") %>%
         isTRUE()
@@ -117,11 +125,13 @@ init_board.s3_board <- function(conf) {
   aws_creds <- conf$creds
   if (aws_creds$key == "" | aws_creds$secret == "") {
     if (aws_creds$profile_name == "") {
-      stop(cli::format_error(glue::glue(
-        "Please check aws credentials. You need",
-        "to provide either key and secret or ",
-        "valid profile name"
-      )))
+      stop(cli::format_error(
+        glue::glue(
+          "Please check aws credentials. You need",
+          "to provide either key and secret or ",
+          "valid profile name"
+        )
+      ))
     }
     aws_creds$key <-
       aws.signature::locate_credentials(profile = aws_creds$profile_name)$key
@@ -165,7 +175,8 @@ init_board.s3_board <- function(conf) {
 
 #' @keywords internal
 get_inputboard_alias <- function(conf) {
-  inputboard_alias <- paste0(conf$board_params$board_alias, "_dpinput")
+  inputboard_alias <-
+    paste0(conf$board_params$board_alias, "_dpinput")
   return(inputboard_alias)
 }
 
@@ -186,9 +197,9 @@ syncedmap_rename <- function(synced_map) {
   rename_map <- sapply(parsed_paths, function(path_i) {
     rename_i <- path_i
     if (length(path_i) > 1) {
-      rename_i <- paste0(path_i[which(path_i == "input_files"):length(path_i)],
-        collapse = "/"
-      )
+      rename_i <-
+        paste0(path_i[which(path_i == "input_files"):length(path_i)],
+               collapse = "/")
     }
     rename_i
   }, simplify = T, USE.NAMES = T)
@@ -198,54 +209,66 @@ syncedmap_rename <- function(synced_map) {
 }
 
 #' @keywords internal
-sync_iterate <- function(input_map, inputboard_alias, skip_sync, verbose) {
-  synced_map <- purrr::map(.x = input_map, .f = function(input_i) {
+sync_iterate <-
+  function(input_map,
+           inputboard_alias,
+           skip_sync,
+           verbose) {
+    synced_map <- purrr::map(
+      .x = input_map,
+      .f = function(input_i) {
+        # This version conincidetally also addresses pins bug where data.txt can be
+        # overwritten
+        synced_versions <-
+          pins::pin_versions(name = input_i$metadata$name,
+                             board = inputboard_alias)$version
 
-    # This version conincidetally also addresses pins bug where data.txt can be
-    # overwritten
-    synced_versions <- pins::pin_versions(
-      name = input_i$metadata$name,
-      board = inputboard_alias
-    )$version
+        input_i$metadata$synced <-
+          input_i$metadata$pin_version %in% synced_versions
 
-    input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
+        if (verbose &
+            input_i$metadata$synced &
+            !input_i$metadata$id %in% skip_sync) {
+          cli::cli_alert_info(
+            glue::glue(
+              "Input {input_i$metadata$name}",
+              ", version {input_i$metadata$pin_version}",
+              " is already synced"
+            )
+          )
+        }
 
-    if (verbose & input_i$metadata$synced & !input_i$metadata$id %in% skip_sync) {
-      cli::cli_alert_info(glue::glue(
-        "Input {input_i$metadata$name}",
-        ", version {input_i$metadata$pin_version}",
-        " is already synced"
-      ))
-    }
+        if (!input_i$metadata$id %in% skip_sync &
+            !input_i$metadata$synced) {
+          tmp_pind <- try(pins::pin_write(
+            x = input_i$data,
+            name = input_i$metadata$name,
+            board = inputboard_alias,
+            description = input_i$metadata$description
+          ))
 
-    if (!input_i$metadata$id %in% skip_sync & !input_i$metadata$synced) {
-      #TODO
-      tmp_pind <- try(pins::pin(
-        x = input_i$data,
-        name = input_i$metadata$name,
-        board = inputboard_alias,
-        description = input_i$metadata$description
-      ))
+          sync_attempt_state <- "failed"
+          sync_alrt <- cli::cli_alert_warning
+          if (!"try-error" %in% class(tmp_pind)) {
+            input_i$metadata$synced <- TRUE
+            sync_attempt_state <- "completed"
+            sync_alrt <- cli::cli_alert_success
+          }
 
-      sync_attempt_state <- "failed"
-      sync_alrt <- cli::cli_alert_warning
-      if (!"try-error" %in% class(tmp_pind)) {
-        input_i$metadata$synced <- TRUE
-        sync_attempt_state <- "completed"
-        sync_alrt <- cli::cli_alert_success
+          if (verbose) {
+            sync_alrt(
+              glue::glue(
+                "Input {input_i$metadata$name}, version ",
+                "{input_i$metadata$pin_version} --> sync",
+                " {sync_attempt_state}"
+              )
+            )
+          }
+        }
+
+        input_i
       }
+    )
 
-      if (verbose) {
-        sync_alrt(glue::glue(
-          "Input {input_i$metadata$name}, version ",
-          "{input_i$metadata$pin_version} --> sync",
-          " {sync_attempt_state}"
-        ))
-      }
-    }
-
-    input_i
-  })
-
-  invisible(synced_map)
-}
+    invisible(synced_map)
+  }

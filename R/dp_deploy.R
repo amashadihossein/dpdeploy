@@ -7,17 +7,20 @@
 #' @export
 dp_deploy <- function(project_path = ".", ...) {
   if (!is_valid_dp_repository(path = project_path)) {
-    stop(cli::format_error(glue::glue(
-      "project_path, {project_path},",
-      " does not point to a valid dp project.",
-      " Make sure project path is set up with ",
-      "dp_init Run ",
-      "dpbuild:::dp_repository_check"
-    )))
+    stop(cli::format_error(
+      glue::glue(
+        "project_path, {project_path},",
+        " does not point to a valid dp project.",
+        " Make sure project path is set up with ",
+        "dp_init Run ",
+        "dpbuild:::dp_repository_check"
+      )
+    ))
   }
 
   # validate and retrieve git info
-  git_info <- gitinfo_validate(project_path = project_path, verbose = F)
+  git_info <-
+    gitinfo_validate(project_path = project_path, verbose = F)
 
   # get daap content and info
   conf <- dpconf_get(project_path = project_path)
@@ -28,8 +31,12 @@ dp_deploy <- function(project_path = ".", ...) {
   ))
 
   dp_deployCore(
-    conf = conf, project_path = project_path, d = d, dlog = dlog,
-    git_info = git_info, ...
+    conf = conf,
+    project_path = project_path,
+    d = d,
+    dlog = dlog,
+    git_info = git_info,
+    ...
   )
 }
 
@@ -37,107 +44,122 @@ dp_deploy <- function(project_path = ".", ...) {
 #' Reason: With S3 generic methods, function calls as defaults parameters are
 #' not recognized as the class of the object they return
 #' @keywords internal
-dp_deployCore <- function(conf, project_path, d, dlog, git_info, ...) {
-  ellipsis::check_dots_used()
-  UseMethod("dp_deployCore", object = conf)
-}
+dp_deployCore <-
+  function(conf, project_path, d, dlog, git_info, ...) {
+    ellipsis::check_dots_used()
+    UseMethod("dp_deployCore", object = conf)
+  }
 
 
 
 #' @keywords internal
-dp_deployCore.labkey_board <- function(conf, project_path, d, dlog, git_info,
-                                       verbose = F, ...) {
-  if (verbose) {
-    print(glue::glue("Deploying to Labkey remote"))
-  }
-
-
-  # define board and pin dp to labkey
-  pins::board_register(
-    board = "labkey",
-    name = conf$board_params$board_alias,
-    api_key = conf$creds$api_key,
-    base_url = conf$board_params$url,
-    folder = conf$board_params$folder,
-    path = "daap",
-    versions = T
-  )
-
-  # This is force data.txt sync prior to pinning to address pins bug where
-  # versions can be lost
-  ver_current <- pins::pin_versions(
-    name = as.character(attr(d, "dp_name")),
-    board = conf$board_params$board_alias
-  )
-
-  #TODO
-  pins::pin(
-    x = d,
-    name = attr(d, "dp_name"),
-    board = conf$board_params$board_alias,
-    description = attr(d, "branch_description")
-  )
-
-
-  # Update dpboard_log
-  dpboardlog_update(conf = conf, dlog = dlog, git_info = git_info)
-
-  return(TRUE)
-}
-
-
-#' @keywords internal
-dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
-                                   verbose = F, ...) {
-  if (verbose) {
-    print(glue::glue("Deploying to S3 remote"))
-  }
-
-  # define board and pin dp to S3
-  aws_creds <- conf$creds
-  if (aws_creds$key == "" | aws_creds$secret == "") {
-    if (aws_creds$profile_name == "") {
-      stop(cli::format_error(
-        "Please check aws credentials. You need to ",
-        "provide either key and secret or valid profile ",
-        "name"
-      ))
+dp_deployCore.labkey_board <-
+  function(conf,
+           project_path,
+           d,
+           dlog,
+           git_info,
+           verbose = F,
+           ...) {
+    if (verbose) {
+      print(glue::glue("Deploying to Labkey remote"))
     }
 
-    aws_creds$key <-
-      aws.signature::locate_credentials(profile = aws_creds$profile_name)$key
-    aws_creds$secret <-
-      aws.signature::locate_credentials(profile = aws_creds$profile_name)$secret
+
+    # define board and pin dp to labkey
+    pins::board_register(
+      board = "labkey",
+      name = conf$board_params$board_alias,
+      api_key = conf$creds$api_key,
+      base_url = conf$board_params$url,
+      folder = conf$board_params$folder,
+      path = "daap",
+      versions = T
+    )
+
+    # This is force data.txt sync prior to pinning to address pins bug where
+    # versions can be lost
+    ver_current <-
+      pins::pin_versions(name = as.character(attr(d, "dp_name")),
+                         board = conf$board_params$board_alias)
+
+    pins::pin_write(
+      x = d,
+      name = attr(d, "dp_name"),
+      board = conf$board_params$board_alias,
+      description = attr(d, "branch_description")
+    )
+
+
+    # Update dpboard_log
+    dpboardlog_update(conf = conf,
+                      dlog = dlog,
+                      git_info = git_info)
+
+    return(TRUE)
   }
 
-  pins::board_register(
-    board = "s3",
-    name = conf$board_params$board_alias,
-    bucket = conf$board_params$bucket_name,
-    versions = TRUE,
-    key = aws_creds$key,
-    secret = aws_creds$secret,
-    region = conf$board_params$region,
-    path = "daap"
-  )
 
-  # This is force data.txt sync prior to pinning to address pins bug where
-  # versions can be lost
-  ver_current <- pins::pin_versions(
-    name = as.character(attr(d, "dp_name")),
-    board = conf$board_params$board_alias
-  )
+#' @keywords internal
+dp_deployCore.s3_board <-
+  function(conf,
+           project_path,
+           d,
+           dlog,
+           git_info,
+           verbose = F,
+           ...) {
+    if (verbose) {
+      print(glue::glue("Deploying to S3 remote"))
+    }
 
-  #TODO
-  pins::pin(
-    x = d,
-    name = as.character(attr(d, "dp_name")),
-    board = conf$board_params$board_alias,
-    description = as.character(attr(d, "branch_description"))
-  )
+    # define board and pin dp to S3
+    aws_creds <- conf$creds
+    if (aws_creds$key == "" | aws_creds$secret == "") {
+      if (aws_creds$profile_name == "") {
+        stop(
+          cli::format_error(
+            "Please check aws credentials. You need to ",
+            "provide either key and secret or valid profile ",
+            "name"
+          )
+        )
+      }
 
-  # Update dpboard_log
-  dpboardlog_update(conf = conf, dlog = dlog, git_info = git_info)
+      aws_creds$key <-
+        aws.signature::locate_credentials(profile = aws_creds$profile_name)$key
+      aws_creds$secret <-
+        aws.signature::locate_credentials(profile = aws_creds$profile_name)$secret
+    }
 
-  return(TRUE)
-}
+    pins::board_register(
+      board = "s3",
+      name = conf$board_params$board_alias,
+      bucket = conf$board_params$bucket_name,
+      versions = TRUE,
+      key = aws_creds$key,
+      secret = aws_creds$secret,
+      region = conf$board_params$region,
+      path = "daap"
+    )
+
+    # This is force data.txt sync prior to pinning to address pins bug where
+    # versions can be lost
+    ver_current <-
+      pins::pin_versions(name = as.character(attr(d, "dp_name")),
+                         board = conf$board_params$board_alias)
+
+    pins::pin_write(
+      x = d,
+      name = as.character(attr(d, "dp_name")),
+      board = conf$board_params$board_alias,
+      description = as.character(attr(d, "branch_description"))
+    )
+
+    # Update dpboard_log
+    dpboardlog_update(conf = conf,
+                      dlog = dlog,
+                      git_info = git_info)
+
+    return(TRUE)
+  }
