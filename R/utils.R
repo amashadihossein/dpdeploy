@@ -98,7 +98,7 @@ dpboardlog_update <- function(conf,
     expr = {
       pins::pin_read(
         name = "dpboard-log",
-        board = conf$board_params$board_alias
+        board = conf$board_params$board_alias)
         #files = F, cache = F)
     },
     error = function(er) {
@@ -246,20 +246,20 @@ dpboardlog_update <- function(conf,
 #' @importFrom dplyr .data
 #' @keywords internal
 
-#get_pin_version <- function(d, pin_name, pin_description) {
-#  pin_name <- as.character(pin_name)
-#  pin_description <- as.character(pin_description)
+get_pin_version <- function(d, pin_name, pin_description) {
+  pin_name <- as.character(pin_name)
+  pin_description <- as.character(pin_description)
 
-#  pins::board_register_local(name = "daap_internal", version = T)
+  pins::board_register_local(name = "daap_internal", version = T)
 
 
-#  pins::pin_remove(name = pin_name, board = "daap_internal")
-#  pins::pin(
-#    x = d,
-#    name = pin_name,
-#    board = "daap_internal",
-#    description = pin_description
-#  )
+  pins::pin_remove(name = pin_name, board = "daap_internal")
+  pins::pin(
+    x = d,
+    name = pin_name,
+    board = "daap_internal",
+    description = pin_description
+  )
 
 pin_version <- pins::pin_versions(name = pin_name,
                                   board = "daap_internal",
