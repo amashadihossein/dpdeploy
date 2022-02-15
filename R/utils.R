@@ -264,7 +264,7 @@ get_pin_version <- function(d, pin_name, pin_description) {
 pin_version <- pins::pin_versions(name = pin_name,
                                   board = "daap_internal",
                                   full = F) %>% dplyr::pull(.data$version)
-pins::pin_delete(name = pin_name, board = "daap_internal")
+pins::pin_remove(name = pin_name, board = "daap_internal")
 
 return(pin_version)
 }

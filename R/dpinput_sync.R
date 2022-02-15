@@ -123,15 +123,13 @@ init_board.labkey_board <- function(conf) {
 #' @keywords internal
 init_board.s3_board <- function(conf) {
   aws_creds <- conf$creds
-  if (aws_creds$key == "" | aws_creds$secret == "") {
-    if (aws_creds$profile_name == "") {
-      stop(cli::format_error(
-        glue::glue(
-          "Please check aws credentials. You need",
-          "to provide either key and secret or ",
-          "valid profile name"
+  if (!exists("aws_creds$key") | !exists("aws_creds$secret")) {
+    if (!exists("aws_creds$profile_name")) {
+      print(
+          "Please check aws credentials. You need\n
+          to provide either key and secret or \n
+          valid profile name\n"
         )
-      ))
     }
     aws_creds$key <-
       aws.signature::locate_credentials(profile = aws_creds$profile_name)$key

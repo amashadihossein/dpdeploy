@@ -115,14 +115,12 @@ dp_deployCore.s3_board <-
 
     # define board and pin dp to S3
     aws_creds <- conf$creds
-    if (aws_creds$key == "" | aws_creds$secret == "") {
-      if (aws_creds$profile_name == "") {
-        stop(
-          cli::format_error(
-            "Please check aws credentials. You need to ",
-            "provide either key and secret or valid profile ",
-            "name"
-          )
+    if (!exists("aws_creds$key") | !exists("aws_creds$secret")) {
+      if (!exists("aws_creds$profile_name")) {
+        print(
+          "Please check aws credentials. You need\n
+          to provide either key and secret or \n
+          valid profile name\n"
         )
       }
 
