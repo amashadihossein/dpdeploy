@@ -107,6 +107,61 @@ dp_archiveCore.labkey_board <- function(conf,
 }
 
 
+
+
+
+
+#' @keywords internal
+dp_archiveCore.local_board <- function(conf,
+                                        dp_name,
+                                        pin_version,
+                                        git_info,
+                                        verbose = F,
+                                        ...) {
+  if (verbose) {
+    print(glue::glue(
+      "Archiving {dp_name}, version {pin_version} from Labkey ",
+      "remote"
+    ))
+  }
+
+
+  # define board and pin dp to labkey
+  pins::board_register(
+    board = "local",
+    name = conf$board_params$board_alias,
+    api_key = conf$creds$api_key,
+    base_url = conf$board_params$url,
+    folder = conf$board_params$folder,
+    path = "daap",
+    versions = T
+  )
+
+  # This is force data.txt sync prior to pinning to address pins bug where
+  # versions can be lost
+  ver_current <- pins::pin_versions(name = dp_name,
+                                    board = conf$board_params$board_alias)
+
+  pins::pin_remove(name = dp_name,
+                   board = conf$board_params$board_alias)
+
+
+  # Update dpboard_log
+  dpboardlog_update(
+    conf = conf,
+    git_info = git_info,
+    dp_name = dp_name,
+    pin_version = pin_version
+  )
+
+  return(TRUE)
+}
+
+
+
+
+
+
 #' @keywords internal
 dp_archiveCore.s3_board <- function(conf,
                                     dp_name,

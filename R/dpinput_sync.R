@@ -105,7 +105,7 @@ init_board.labkey_board <- function(conf) {
   #  versions = TRUE
   #)
 
-  pins::board_s3(
+  pins::board_register_s3(
     bucket = "labkey",
     prefix = NULL,
     versioned = TRUE,
@@ -119,6 +119,46 @@ init_board.labkey_board <- function(conf) {
     cache = NULL
   )
 }
+
+
+
+
+
+#' @keywords internal
+init_board.local_board <- function(conf) {
+  input_params <- conf$board_params
+  input_params$api_key <- conf$creds$api_key
+
+  #pins::board_s3(
+  #  board = "labkey",
+  #  name = get_inputboard_alias(conf),
+  #  api_key = input_params$api_key,
+  #  base_url = input_params$url,
+  #  folder = input_params$folder,
+  #  path = "dpinput",
+  #  versions = TRUE
+  #)
+
+  pins::board_register_local(
+    bucket = "local",
+    prefix = NULL,
+    versioned = TRUE,
+    access_key = NULL,
+    secret_access_key = NULL,
+    session_token = NULL,
+    credential_expiration = NULL,
+    profile = NULL,
+    region = NULL,
+    endpoint = NULL,
+    cache = NULL
+  )
+}
+
+
+
+
+
+
 
 #' @keywords internal
 init_board.s3_board <- function(conf) {
@@ -155,7 +195,7 @@ init_board.s3_board <- function(conf) {
   #  versions = TRUE
   #)
 
-  pins::board_s3(
+  pins::board_register_s3(
     bucket = input_params$bucket_name,
     prefix = "dpinput",
     versioned = TRUE,
