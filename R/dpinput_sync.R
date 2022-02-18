@@ -7,6 +7,7 @@
 #' @param ... other parameters e.g. verbose = T
 #' @return synced_map this is input_map with sync status added to metadata
 #' @importFrom dplyr .data
+#'
 #' @export
 dpinput_sync <- function(conf, input_map, verbose = F, ...) {
   if (verbose) {
