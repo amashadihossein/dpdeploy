@@ -3,6 +3,7 @@
 #' @name dpconf_get
 dpbuild::dpconf_get
 
+
 #' @importFrom dpbuild is_valid_dp_repository
 #' @export
 #' @name is_valid_dp_repository
@@ -63,7 +64,6 @@ gitinfo_validate <- function(project_path, verbose = F) {
 
   return(git_info)
 }
-
 
 
 #' @title Update dpboard log
@@ -245,7 +245,6 @@ dpboardlog_update <- function(conf,
 #' @return a character version
 #' @importFrom dplyr .data
 #' @keywords internal
-
 get_pin_version <- function(d, pin_name, pin_description) {
   pin_name <- as.character(pin_name)
   pin_description <- as.character(pin_description)
