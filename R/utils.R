@@ -85,14 +85,15 @@ dpboardlog_update <- function(conf,
                               pin_version = character(0)) {
   board_info <- dpconnect_check(board_params = conf$board_params)
 
-  if (board_info$subpath != "daap") {
-    stop(cli::format_error(
-      glue::glue(
-        "dpboard is not pointing to daap ",
-        "subfolder on remote. Check board."
-      )
-    ))
-  }
+  #TODO
+  # if (board_info$subpath != "daap") {
+  #   stop(cli::format_error(
+  #     glue::glue(
+  #       "dpboard is not pointing to daap ",
+  #       "subfolder on remote. Check board."
+  #     )
+  #   ))
+  # }
 
   dpboard_log <- tryCatch(
     expr = {
