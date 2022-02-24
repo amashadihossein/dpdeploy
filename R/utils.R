@@ -96,7 +96,7 @@ dpboardlog_update <- function(conf,
 
   dpboard_log <- tryCatch(
     expr = {
-      pins::pin_read(
+      pins::pin_get(
         name = "dpboard-log",
         board = conf$board_params$board_alias)
         #files = F, cache = F)
@@ -171,7 +171,7 @@ dpboardlog_update <- function(conf,
         ver_current <- pins::pin_versions(name = "dpboard-log",
                                           board = conf$board_params$board_alias)
 
-        pins::pin_write(
+        pins::pin(
           x = dpboard_log,
           name = "dpboard-log",
           board = conf$board_params$board_alias,
@@ -224,7 +224,7 @@ dpboardlog_update <- function(conf,
       # versions can be lost
       ver_current <- pins::pin_versions(name = "dpboard-log",
                                         board = conf$board_params$board_alias)
-      pins::pin_write(
+      pins::pin(
         x = dpboard_log,
         name = "dpboard-log",
         board = conf$board_params$board_alias,

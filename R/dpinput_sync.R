@@ -148,7 +148,7 @@ init_board.local_board <- function(conf) {
     profile = NULL,
     region = NULL,
     endpoint = NULL,
-    cache = NULL
+    cache = input_params$cache
   )
 }
 
@@ -204,11 +204,12 @@ init_board.s3_board <- function(conf) {
 
 }
 
-
+#TODO
+#paste0(conf$board_params$board_alias, "_dpinput")
 #' @keywords internal
 get_inputboard_alias <- function(conf) {
   inputboard_alias <-
-    paste0(conf$board_params$board_alias, "_dpinput")
+    paste0(conf$board_params$board_alias, "")
   return(inputboard_alias)
 }
 
@@ -274,7 +275,7 @@ sync_iterate <- function(input_map,
 
       if (!input_i$metadata$id %in% skip_sync &
           !input_i$metadata$synced) {
-        tmp_pind <- try(pins::pin_write(
+        tmp_pind <- try(pins::pin(
           x = input_i$data,
           name = input_i$metadata$name,
           board = inputboard_alias,

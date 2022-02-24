@@ -83,7 +83,7 @@ dp_deployCore.labkey_board <-
       pins::pin_versions(name = as.character(attr(d, "dp_name")),
                          board = conf$board_params$board_alias)
 
-    pins::pin_write(
+    pins::pin(
       x = d,
       name = attr(d, "dp_name"),
       board = conf$board_params$board_alias,
@@ -135,7 +135,7 @@ dp_deployCore.local_board <-
       pins::pin_versions(name = as.character(attr(d, "dp_name")),
                          board = conf$board_params$board_alias)
 
-    pins::pin_write(
+    pins::pin(
       x = d,
       name = attr(d, "dp_name"),
       board = conf$board_params$board_alias,
@@ -204,7 +204,7 @@ dp_deployCore.s3_board <-
       pins::pin_versions(name = as.character(attr(d, "dp_name")),
                          board = conf$board_params$board_alias)
 
-    pins::pin_write(
+    pins::pin(
       x = d,
       name = as.character(attr(d, "dp_name")),
       board = conf$board_params$board_alias,
