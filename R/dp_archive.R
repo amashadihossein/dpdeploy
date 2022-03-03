@@ -28,7 +28,7 @@ dp_archive <- function(project_path = ".", ...) {
   args <- list(...)
   dp_specified <-
     is.character(args$dp_name) & length(args$dp_name) > 0 &
-    is.character(args$pin_version) & length(args$pin_version) > 0
+      is.character(args$pin_version) & length(args$pin_version) > 0
 
   if (dp_specified) {
     dp_name <- args$dp_name
@@ -88,11 +88,15 @@ dp_archiveCore.labkey_board <- function(conf,
 
   # This is force data.txt sync prior to pinning to address pins bug where
   # versions can be lost
-  ver_current <- pins::pin_versions(name = dp_name,
-                                    board = conf$board_params$board_alias)
+  ver_current <- pins::pin_versions(
+    name = dp_name,
+    board = conf$board_params$board_alias
+  )
 
-  pins::pin_remove(name = dp_name,
-                   board = conf$board_params$board_alias)
+  pins::pin_remove(
+    name = dp_name,
+    board = conf$board_params$board_alias
+  )
 
 
   # Update dpboard_log
@@ -113,11 +117,11 @@ dp_archiveCore.labkey_board <- function(conf,
 
 #' @keywords internal
 dp_archiveCore.local_board <- function(conf,
-                                        dp_name,
-                                        pin_version,
-                                        git_info,
-                                        verbose = F,
-                                        ...) {
+                                       dp_name,
+                                       pin_version,
+                                       git_info,
+                                       verbose = F,
+                                       ...) {
   if (verbose) {
     print(glue::glue(
       "Archiving {dp_name}, version {pin_version} from Labkey ",
@@ -139,11 +143,15 @@ dp_archiveCore.local_board <- function(conf,
 
   # This is force data.txt sync prior to pinning to address pins bug where
   # versions can be lost
-  ver_current <- pins::pin_versions(name = dp_name,
-                                    board = conf$board_params$board_alias)
+  ver_current <- pins::pin_versions(
+    name = dp_name,
+    board = conf$board_params$board_alias
+  )
 
-  pins::pin_remove(name = dp_name,
-                   board = conf$board_params$board_alias)
+  pins::pin_remove(
+    name = dp_name,
+    board = conf$board_params$board_alias
+  )
 
 
   # Update dpboard_log
@@ -206,11 +214,15 @@ dp_archiveCore.s3_board <- function(conf,
 
   # This is force data.txt sync prior to pinning to address pins bug where
   # versions can be lost
-  ver_current <- pins::pin_versions(name = dp_name,
-                                    board = conf$board_params$board_alias)
+  ver_current <- pins::pin_versions(
+    name = dp_name,
+    board = conf$board_params$board_alias
+  )
 
-  pins::pin_remove(name = dp_name,
-                   board = conf$board_params$board_alias)
+  pins::pin_remove(
+    name = dp_name,
+    board = conf$board_params$board_alias
+  )
 
 
   # Update dpboard_log

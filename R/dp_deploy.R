@@ -80,8 +80,10 @@ dp_deployCore.labkey_board <-
     # This is force data.txt sync prior to pinning to address pins bug where
     # versions can be lost
     ver_current <-
-      pins::pin_versions(name = as.character(attr(d, "dp_name")),
-                         board = conf$board_params$board_alias)
+      pins::pin_versions(
+        name = as.character(attr(d, "dp_name")),
+        board = conf$board_params$board_alias
+      )
 
     pins::pin(
       x = d,
@@ -92,9 +94,11 @@ dp_deployCore.labkey_board <-
 
 
     # Update dpboard_log
-    dpboardlog_update(conf = conf,
-                      dlog = dlog,
-                      git_info = git_info)
+    dpboardlog_update(
+      conf = conf,
+      dlog = dlog,
+      git_info = git_info
+    )
 
     return(TRUE)
   }
@@ -132,8 +136,10 @@ dp_deployCore.local_board <-
     # This is force data.txt sync prior to pinning to address pins bug where
     # versions can be lost
     ver_current <-
-      pins::pin_versions(name = as.character(attr(d, "dp_name")),
-                         board = conf$board_params$board_alias)
+      pins::pin_versions(
+        name = as.character(attr(d, "dp_name")),
+        board = conf$board_params$board_alias
+      )
 
     pins::pin(
       x = d,
@@ -144,9 +150,11 @@ dp_deployCore.local_board <-
 
 
     # Update dpboard_log
-    dpboardlog_update(conf = conf,
-                      dlog = dlog,
-                      git_info = git_info)
+    dpboardlog_update(
+      conf = conf,
+      dlog = dlog,
+      git_info = git_info
+    )
 
     return(TRUE)
   }
@@ -201,8 +209,10 @@ dp_deployCore.s3_board <-
     # This is force data.txt sync prior to pinning to address pins bug where
     # versions can be lost
     ver_current <-
-      pins::pin_versions(name = as.character(attr(d, "dp_name")),
-                         board = conf$board_params$board_alias)
+      pins::pin_versions(
+        name = as.character(attr(d, "dp_name")),
+        board = conf$board_params$board_alias
+      )
 
     pins::pin(
       x = d,
@@ -212,9 +222,11 @@ dp_deployCore.s3_board <-
     )
 
     # Update dpboard_log
-    dpboardlog_update(conf = conf,
-                      dlog = dlog,
-                      git_info = git_info)
+    dpboardlog_update(
+      conf = conf,
+      dlog = dlog,
+      git_info = git_info
+    )
 
     return(TRUE)
   }

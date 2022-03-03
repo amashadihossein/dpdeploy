@@ -23,11 +23,11 @@ gitinfo_validate <- function(project_path, verbose = F) {
 
   git_info_valid <-
     nchar(git_sha <- as.character(last_commit$sha)) > 0 &
-    nchar(git_uname <- as.character(last_commit$author$name)) > 0 &
-    nchar(git_uemail <-
-            as.character(last_commit$author$email)) > 0 &
-    nchar(git_timestamp <-
-            paste0(last_commit$author$when, collapse = " ")) > 0
+      nchar(git_uname <- as.character(last_commit$author$name)) > 0 &
+      nchar(git_uemail <-
+        as.character(last_commit$author$email)) > 0 &
+      nchar(git_timestamp <-
+        paste0(last_commit$author$when, collapse = " ")) > 0
 
   if (!git_info_valid) {
     stop(cli::format_error(
@@ -49,7 +49,8 @@ gitinfo_validate <- function(project_path, verbose = F) {
   #-----Check remote git url-------------
   remote_url <-
     try(git2r::remote_url(repo = ".", remote = git2r::remotes()),
-        silent = T)
+      silent = T
+    )
   has_remote_url <- class(remote_url) != "try-error"
   if (verbose) {
     if (has_remote_url) {
@@ -85,7 +86,7 @@ dpboardlog_update <- function(conf,
                               pin_version = character(0)) {
   board_info <- dpconnect_check(board_params = conf$board_params)
 
-  #TODO
+  # TODO
   # if (board_info$subpath != "daap") {
   #   stop(cli::format_error(
   #     glue::glue(
@@ -99,8 +100,9 @@ dpboardlog_update <- function(conf,
     expr = {
       pins::pin_get(
         name = "dpboard-log",
-        board = conf$board_params$board_alias)
-        #files = F, cache = F)
+        board = conf$board_params$board_alias
+      )
+      # files = F, cache = F)
     },
     error = function(er) {
       msg <- conditionMessage(er)
@@ -113,126 +115,130 @@ dpboardlog_update <- function(conf,
 
       invisible(structure(msg, class = "try-error"))
     }
+  )
+
+
+  if (!"data.frame" %in% class(dpboard_log)) {
+    dpboard_log <- NULL
+  }
+
+  if (length(dlog) == 0) {
+    if (length(dp_name) == 0 | length(pin_version) == 0) {
+      stop(cli::format_error(
+        glue::glue(
+          "Cannot update. dlog, dp_name and ",
+          "pin_version all have length 0"
+        )
+      ))
+    }
+    if (is.null(dpboard_log)) {
+      stop(cli::format_error(
+        glue::glue(
+          "dpboard-log was not found. Make sure ",
+          "dpboard-log exists for this board"
+        )
+      ))
+    }
+
+    # update the records based on composite key dp_name, dp_version, and git_sha
+    dpboard_log_tmp <- dpboard_log %>%
+      dplyr::filter(
+        .data$dp_name != dp_name | .data$pin_version != pin_version |
+          .data$git_sha != git_info$git_sha
       )
 
-
-      if (!"data.frame" %in% class(dpboard_log)) {
-        dpboard_log <- NULL
-      }
-
-      if (length(dlog) == 0) {
-        if (length(dp_name) == 0 | length(pin_version) == 0) {
-          stop(cli::format_error(
-            glue::glue(
-              "Cannot update. dlog, dp_name and ",
-              "pin_version all have length 0"
-            )
-          ))
-        }
-        if (is.null(dpboard_log)) {
-          stop(cli::format_error(
-            glue::glue(
-              "dpboard-log was not found. Make sure ",
-              "dpboard-log exists for this board"
-            )
-          ))
-        }
-
-        # update the records based on composite key dp_name, dp_version, and git_sha
-        dpboard_log_tmp <- dpboard_log %>%
-          dplyr::filter(
-            .data$dp_name != dp_name | .data$pin_version != pin_version |
-              .data$git_sha != git_info$git_sha
-          )
-
-        tmp <- dpboard_log %>%
-          dplyr::filter(
-            .data$dp_name == dp_name & .data$pin_version == pin_version &
-              .data$git_sha == git_info$git_sha
-          )
-        if (nrow(tmp) == 0) {
-          stop(cli::format_error(
-            glue::glue(
-              "The provided compbination of dp_name ",
-              "{dp_name}, dp_version {dp_version}, ",
-              "and git_sha {git_info$git_sha} is not",
-              " in dpboard-log. Verify the values ",
-              "
+    tmp <- dpboard_log %>%
+      dplyr::filter(
+        .data$dp_name == dp_name & .data$pin_version == pin_version &
+          .data$git_sha == git_info$git_sha
+      )
+    if (nrow(tmp) == 0) {
+      stop(cli::format_error(
+        glue::glue(
+          "The provided compbination of dp_name ",
+          "{dp_name}, dp_version {dp_version}, ",
+          "and git_sha {git_info$git_sha} is not",
+          " in dpboard-log. Verify the values ",
+          "
                                         are correct!"
-            )
-          ))
-        }
-
-        tmp <- tmp %>% dplyr::mutate(archived = TRUE)
-        dpboard_log <- dplyr::bind_rows(dpboard_log_tmp, tmp) %>%
-          dplyr::distinct()
-
-        # This is force data.txt sync prior to pinning to address pins bug where
-        # versions can be lost
-        ver_current <- pins::pin_versions(name = "dpboard-log",
-                                          board = conf$board_params$board_alias)
-
-        pins::pin(
-          x = dpboard_log,
-          name = "dpboard-log",
-          board = conf$board_params$board_alias,
-          description = "Data Product Log"
         )
+      ))
+    }
 
-        return(TRUE)
-      }
+    tmp <- tmp %>% dplyr::mutate(archived = TRUE)
+    dpboard_log <- dplyr::bind_rows(dpboard_log_tmp, tmp) %>%
+      dplyr::distinct()
 
-      # Update dp manifest
-      daap_log_i <- dlog[dlog$HEAD]
+    # This is force data.txt sync prior to pinning to address pins bug where
+    # versions can be lost
+    ver_current <- pins::pin_versions(
+      name = "dpboard-log",
+      board = conf$board_params$board_alias
+    )
 
-      # Augment with git info
-      daap_log_i[[1]]$git_sha <- git_info$git_sha
-      daap_log_i[[1]]$commit_time <- git_info$git_timestamp
-      daap_log_i[[1]]$git_author_name <- git_info$git_uname
-      daap_log_i[[1]]$git_author_email <- git_info$git_uemail
-      daap_log_i[[1]]$git_remote <- git_info$remote_url
+    pins::pin(
+      x = dpboard_log,
+      name = "dpboard-log",
+      board = conf$board_params$board_alias,
+      description = "Data Product Log"
+    )
 
-      # Convert to table
-      daap_log_i <- daap_log_i %>%
-        dplyr::bind_rows(.id = "rdsid") %>%
-        dplyr::mutate(rdsid = gsub("rds_", "", .data$rdsid)) %>%
-        dplyr::mutate(dp_name = gsub(
-          pattern = "_",
-          replacement = "-",
-          x = .data$dp_name
-        )) %>%
-        dplyr::relocate(.data$dp_name) %>%
-        dplyr::mutate(last_deployed = format(Sys.time(), tz = "GMT", usetz = TRUE)) %>%
-        dplyr::mutate(archived = FALSE)
+    return(TRUE)
+  }
+
+  # Update dp manifest
+  daap_log_i <- dlog[dlog$HEAD]
+
+  # Augment with git info
+  daap_log_i[[1]]$git_sha <- git_info$git_sha
+  daap_log_i[[1]]$commit_time <- git_info$git_timestamp
+  daap_log_i[[1]]$git_author_name <- git_info$git_uname
+  daap_log_i[[1]]$git_author_email <- git_info$git_uemail
+  daap_log_i[[1]]$git_remote <- git_info$remote_url
+
+  # Convert to table
+  daap_log_i <- daap_log_i %>%
+    dplyr::bind_rows(.id = "rdsid") %>%
+    dplyr::mutate(rdsid = gsub("rds_", "", .data$rdsid)) %>%
+    dplyr::mutate(dp_name = gsub(
+      pattern = "_",
+      replacement = "-",
+      x = .data$dp_name
+    )) %>%
+    dplyr::relocate(.data$dp_name) %>%
+    dplyr::mutate(last_deployed = format(Sys.time(), tz = "GMT", usetz = TRUE)) %>%
+    dplyr::mutate(archived = FALSE)
 
 
-      if (is.null(dpboard_log)) {
-        dpboard_log <- daap_log_i %>% dplyr::slice(0)
-      }
+  if (is.null(dpboard_log)) {
+    dpboard_log <- daap_log_i %>% dplyr::slice(0)
+  }
 
-      # Update deploy time if same pin/git_sha exist otherwise append
-      tmp <- dpboard_log %>%
-        dplyr::filter(
-          .data$dp_name != daap_log_i$dp_name |
-            .data$pin_version != daap_log_i$pin_version |
-            .data$git_sha != daap_log_i$git_sha
-        )
+  # Update deploy time if same pin/git_sha exist otherwise append
+  tmp <- dpboard_log %>%
+    dplyr::filter(
+      .data$dp_name != daap_log_i$dp_name |
+        .data$pin_version != daap_log_i$pin_version |
+        .data$git_sha != daap_log_i$git_sha
+    )
 
-      dpboard_log <- dplyr::bind_rows(tmp, daap_log_i) %>%
-        dplyr::distinct()
+  dpboard_log <- dplyr::bind_rows(tmp, daap_log_i) %>%
+    dplyr::distinct()
 
-      # This is force data.txt sync prior to pinning to address pins bug where
-      # versions can be lost
-      ver_current <- pins::pin_versions(name = "dpboard-log",
-                                        board = conf$board_params$board_alias)
-      pins::pin(
-        x = dpboard_log,
-        name = "dpboard-log",
-        board = conf$board_params$board_alias,
-        description = "Data Product Log"
-      )
+  # This is force data.txt sync prior to pinning to address pins bug where
+  # versions can be lost
+  ver_current <- pins::pin_versions(
+    name = "dpboard-log",
+    board = conf$board_params$board_alias
+  )
+  pins::pin(
+    x = dpboard_log,
+    name = "dpboard-log",
+    board = conf$board_params$board_alias,
+    description = "Data Product Log"
+  )
 
-      return(TRUE)
+  return(TRUE)
 }
 
 
@@ -261,12 +267,14 @@ get_pin_version <- function(d, pin_name, pin_description) {
     description = pin_description
   )
 
-pin_version <- pins::pin_versions(name = pin_name,
-                                  board = "daap_internal",
-                                  full = F) %>% dplyr::pull(.data$version)
-pins::pin_remove(name = pin_name, board = "daap_internal")
+  pin_version <- pins::pin_versions(
+    name = pin_name,
+    board = "daap_internal",
+    full = F
+  ) %>% dplyr::pull(.data$version)
+  pins::pin_remove(name = pin_name, board = "daap_internal")
 
-return(pin_version)
+  return(pin_version)
 }
 
 
@@ -281,8 +289,9 @@ get_dlog <- function(project_path) {
   dlog <- purrr::modify_depth(
     .x = dlog,
     .depth = 2,
-    .f = function(x)
+    .f = function(x) {
       paste0(x, collapse = " > ")
+    }
   )
   return(dlog)
 }

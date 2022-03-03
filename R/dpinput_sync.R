@@ -22,8 +22,8 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
 
   skip_sync <- input_map$input_manifest %>%
     dplyr::filter(.data$to_be_synced == FALSE |
-                    .data$synced == TRUE &
-                    .data$to_be_synced == TRUE) %>%
+      .data$synced == TRUE &
+        .data$to_be_synced == TRUE) %>%
     dplyr::pull(.data$id)
 
   to_be_synced <- setdiff(names(input_map$input_obj), skip_sync)
@@ -96,7 +96,7 @@ init_board.labkey_board <- function(conf) {
   input_params <- conf$board_params
   input_params$api_key <- conf$creds$api_key
 
-  #pins::board_s3(
+  # pins::board_s3(
   #  board = "labkey",
   #  name = get_inputboard_alias(conf),
   #  api_key = input_params$api_key,
@@ -104,7 +104,7 @@ init_board.labkey_board <- function(conf) {
   #  folder = input_params$folder,
   #  path = "dpinput",
   #  versions = TRUE
-  #)
+  # )
 
   pins::board_register_s3(
     bucket = "labkey",
@@ -127,7 +127,7 @@ init_board.local_board <- function(conf) {
   input_params <- conf$board_params
   input_params$api_key <- conf$creds$api_key
 
-  #pins::board_s3(
+  # pins::board_s3(
   #  board = "labkey",
   #  name = get_inputboard_alias(conf),
   #  api_key = input_params$api_key,
@@ -135,19 +135,12 @@ init_board.local_board <- function(conf) {
   #  folder = input_params$folder,
   #  path = "dpinput",
   #  versions = TRUE
-  #)
+  # )
 
   pins::board_register_local(
-    bucket = "local",
-    prefix = NULL,
+    name = "local",
+    path = "dpinput",
     versioned = TRUE,
-    access_key = NULL,
-    secret_access_key = NULL,
-    session_token = NULL,
-    credential_expiration = NULL,
-    profile = NULL,
-    region = NULL,
-    endpoint = NULL,
     cache = input_params$cache
   )
 }
@@ -159,10 +152,10 @@ init_board.s3_board <- function(conf) {
   if (!exists("aws_creds$key") | !exists("aws_creds$secret")) {
     if (!exists("aws_creds$profile_name")) {
       print(
-          "Please check aws credentials. You need\n
+        "Please check aws credentials. You need\n
           to provide either key and secret or \n
           valid profile name\n"
-        )
+      )
     }
     aws_creds$key <-
       aws.signature::locate_credentials(profile = aws_creds$profile_name)$key
@@ -178,7 +171,7 @@ init_board.s3_board <- function(conf) {
     aws_secret = aws_creds$secret
   )
 
-  #pins::board_register_s3(
+  # pins::board_register_s3(
   #  name = get_inputboard_alias(conf),
   #  bucket = input_params$bucket_name,
   #  key = input_params$aws_key,
@@ -186,7 +179,7 @@ init_board.s3_board <- function(conf) {
   #  path = "dpinput",
   #  region = input_params$region,
   #  versions = TRUE
-  #)
+  # )
 
   pins::board_register_s3(
     bucket = input_params$bucket_name,
@@ -201,11 +194,10 @@ init_board.s3_board <- function(conf) {
     endpoint = NULL,
     cache = NULL
   )
-
 }
 
-#TODO
-#paste0(conf$board_params$board_alias, "_dpinput")
+# TODO
+# paste0(conf$board_params$board_alias, "_dpinput")
 #' @keywords internal
 get_inputboard_alias <- function(conf) {
   inputboard_alias <-
@@ -234,7 +226,8 @@ syncedmap_rename <- function(synced_map) {
     if (length(path_i) > 1) {
       rename_i <-
         paste0(path_i[which(path_i == "input_files"):length(path_i)],
-               collapse = "/")
+          collapse = "/"
+        )
     }
     rename_i
   }, simplify = T, USE.NAMES = T)
@@ -255,15 +248,17 @@ sync_iterate <- function(input_map,
       # This version conincidetally also addresses pins bug where data.txt can be
       # overwritten
       synced_versions <-
-        pins::pin_versions(name = input_i$metadata$name,
-                           board = inputboard_alias)$version
+        pins::pin_versions(
+          name = input_i$metadata$name,
+          board = inputboard_alias
+        )$version
 
       input_i$metadata$synced <-
         input_i$metadata$pin_version %in% synced_versions
 
       if (verbose &
-          input_i$metadata$synced &
-          !input_i$metadata$id %in% skip_sync) {
+        input_i$metadata$synced &
+        !input_i$metadata$id %in% skip_sync) {
         cli::cli_alert_info(
           glue::glue(
             "Input {input_i$metadata$name}",
@@ -274,7 +269,7 @@ sync_iterate <- function(input_map,
       }
 
       if (!input_i$metadata$id %in% skip_sync &
-          !input_i$metadata$synced) {
+        !input_i$metadata$synced) {
         tmp_pind <- try(pins::pin(
           x = input_i$data,
           name = input_i$metadata$name,
