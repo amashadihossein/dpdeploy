@@ -239,6 +239,7 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
         description = input_i$metadata$description
       ))
 
+      input_i$metadata$synced <- TRUE
       sync_attempt_state <- "completed"
       sync_alrt <- cli::cli_alert_success
       if ("try-error" %in% class(tmp_pind)) {
