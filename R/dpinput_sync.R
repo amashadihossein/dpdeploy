@@ -10,9 +10,17 @@
 #' @export
 
 dpinput_sync <- function(conf, input_map, verbose = F, ...) {
+  
+  browser()
+  # grab rewrite_ok if passed in ...
+  args <- list(...)
+  rewrite_ok <- args$rewrite_ok
+  if(length(rewrite_ok) == 0)
+    rewrite_ok <- F
+  
   if (verbose) {
     cli::cli_alert_info(glue::glue(
-      "Starting sync to the",
+      "Starting sync to the ",
       "{conf$board_params$board_type} remote: ",
       "{conf$board_params$board_alias}"
     ))
@@ -25,7 +33,7 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
 
   to_be_synced <- setdiff(names(input_map$input_obj), skip_sync)
 
-  if (length(to_be_synced) == 0) {
+  if (length(to_be_synced) == 0 & !rewrite_ok) {
     if (verbose) {
       cli::cli_alert_info("No new unsynced data was found to be synced")
     }
@@ -53,11 +61,12 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
     input_map = input_map,
     inputboard_alias = get_inputboard_alias(conf),
     skip_sync = skip_sync,
+    rewrite_ok = rewrite_ok,
     verbose = verbose
   )
 
   synced_map <- syncedmap_rename(synced_map = synced_map)
-
+  to_be_synced <- pathnames_reroot(pathnames = to_be_synced) %>% unname()
 
   was_synced <- purrr::map(to_be_synced,
     .f = function(di) {
@@ -148,30 +157,55 @@ to_description <- function(input_i) {
   return(as.character(dsc))
 }
 
+# TODO: move syncedmap_rename and pathnames_reroot upstream to dpinput
 #' @keywords internal
 syncedmap_rename <- function(synced_map) {
-  parsed_paths <- fs::path_split(names(synced_map)) %>%
-    `names<-`(names(synced_map))
 
-  rename_map <- sapply(parsed_paths, function(path_i) {
+  rename_map <- pathnames_reroot(pathnames = names(synced_map),
+                                 new_root = "input_files")
+  
+  names(synced_map) <- rename_map[names(synced_map)]
+  
+  # update id accordingly in metadata
+  synced_map <- purrr::modify_in(.x = synced_map,
+                                 .where = list(1,"metadata","id"),
+                                 .f = ~ .x %>% 
+                                   pathnames_reroot(pathnames = .) %>%
+                                   unname)
+                    
+  invisible(synced_map)
+}
+
+#' @title Re-root path names
+#' @description if pathnames are of path format, it sets the root to `new_root` 
+#' dropping all upstream paths beyond `new_root`. If not of path format, it 
+#' keeps the pathnames unchanged
+#' @param pathnames a vector of characters to be re-rooted
+#' @param new_root a directory relative to which all paths be renamed
+#' @keywords internal
+pathnames_reroot <- function(pathnames, new_root = "input_files"){
+  
+  parsed_paths <- fs::path_split(pathnames) %>% `names<-`(pathnames)
+  
+  pathnames_rerooted <- sapply(parsed_paths, function(path_i) {
     rename_i <- path_i
-    if (length(path_i) > 1) {
-      rename_i <- paste0(path_i[which(path_i == "input_files"):length(path_i)],
-        collapse = "/"
+    if (length(path_i) > 1 & new_root %in% path_i) {
+      rename_i <- paste0(path_i[which(path_i == new_root):length(path_i)],
+                         collapse = "/"
       )
     }
     rename_i
   }, simplify = T, USE.NAMES = T)
-
-  names(synced_map) <- rename_map[names(synced_map)]
-  invisible(synced_map)
+  
+  return(pathnames_rerooted)
 }
 
 #' @keywords internal
-sync_iterate <- function(input_map, inputboard_alias, skip_sync, verbose) {
+sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
+                         verbose) {
   synced_map <- purrr::map(.x = input_map, .f = function(input_i) {
 
-    # This version conincidetally also addresses pins bug where data.txt can be
+    # This version coincidentally also addresses pins bug where data.txt can be
     # overwritten
     synced_versions <- pins::pin_versions(
       name = input_i$metadata$name,
@@ -179,16 +213,25 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, verbose) {
     )$version
 
     input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
+    
+    
+    skip_pin_to_remote <- T
+    if(!input_i$metadata$id %in% skip_sync){
+      if(!input_i$metadata$synced | rewrite_ok){
+        skip_pin_to_remote <- F
+      }
+    }
 
-    if (verbose & input_i$metadata$synced & !input_i$metadata$id %in% skip_sync) {
+    if (verbose & skip_pin_to_remote) {
       cli::cli_alert_info(glue::glue(
         "Input {input_i$metadata$name}",
         ", version {input_i$metadata$pin_version}",
-        " is already synced"
+        " is already synced or chosen to be skipped"
       ))
     }
-
-    if (!input_i$metadata$id %in% skip_sync & !input_i$metadata$synced) {
+    
+    
+    if (!skip_pin_to_remote) {
       tmp_pind <- try(pins::pin(
         x = input_i$data,
         name = input_i$metadata$name,
@@ -196,12 +239,12 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, verbose) {
         description = input_i$metadata$description
       ))
 
-      sync_attempt_state <- "failed"
-      sync_alrt <- cli::cli_alert_warning
-      if (!"try-error" %in% class(tmp_pind)) {
-        input_i$metadata$synced <- TRUE
-        sync_attempt_state <- "completed"
-        sync_alrt <- cli::cli_alert_success
+      sync_attempt_state <- "completed"
+      sync_alrt <- cli::cli_alert_success
+      if ("try-error" %in% class(tmp_pind)) {
+        input_i$metadata$synced <- FALSE
+        sync_attempt_state <- "failed"
+        sync_alrt <- cli::cli_alert_warning
       }
 
       if (verbose) {
