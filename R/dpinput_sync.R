@@ -11,7 +11,6 @@
 
 dpinput_sync <- function(conf, input_map, verbose = F, ...) {
   
-  browser()
   # grab rewrite_ok if passed in ...
   args <- list(...)
   rewrite_ok <- args$rewrite_ok
