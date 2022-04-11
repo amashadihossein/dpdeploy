@@ -1,6 +1,6 @@
 Package: dpdeploy
 Title: A package to manage deployment of data products
-Version: 0.0.0.9012
+Version: 0.0.0.9013
 Authors@R: c(
     person("Afshin", "Mashadi-Hossein", , "amashadihossein@gmail.com", role = c("aut", "cre")),
     person("Yue", "Jiang", , "rivehill@gmail.com", role = "aut")
