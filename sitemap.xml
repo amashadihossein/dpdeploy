@@ -43,6 +43,9 @@
     <loc>/reference/dpconnect_check.html</loc>
   </url>
   <url>
+    <loc>/reference/dpdeploy-package.html</loc>
+  </url>
+  <url>
     <loc>/reference/dpinput_sync.html</loc>
   </url>
   <url>
@@ -61,6 +64,12 @@
     <loc>/reference/is_valid_dp_repository.html</loc>
   </url>
   <url>
+    <loc>/reference/pathnames_reroot.html</loc>
+  </url>
+  <url>
     <loc>/reference/pipe.html</loc>
+  </url>
+  <url>
+    <loc>/reference/tidyeval.html</loc>
   </url>
 </urlset>
