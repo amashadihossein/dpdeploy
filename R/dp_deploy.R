@@ -139,3 +139,41 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
 
   return(TRUE)
 }
+
+
+#' @keywords internal
+dp_deployCore.local_board <- function(conf, project_path, d, dlog, git_info,
+                                      verbose = F, ...) {
+  if (verbose) {
+    print(glue::glue("Deploying to local or mounted drive"))
+  }
+  
+  
+  # define board and pin dp to labkey
+  pins::board_register(
+    board = "local",
+    name = conf$board_params$board_alias,
+    folder = file.path(conf$board_params$folder, "daap"),
+    versions = T
+  )
+  
+  # This is force data.txt sync prior to pinning to address pins bug where
+  # versions can be lost. not sure necessary for local board but not harmful
+  ver_current <- pins::pin_versions(
+    name = as.character(attr(d, "dp_name")),
+    board = conf$board_params$board_alias
+  )
+  
+  pins::pin(
+    x = d,
+    name = attr(d, "dp_name"),
+    board = conf$board_params$board_alias,
+    description = attr(d, "branch_description")
+  )
+  
+  
+  # Update dpboard_log
+  dpboardlog_update(conf = conf, dlog = dlog, git_info = git_info)
+  
+  return(TRUE)
+}

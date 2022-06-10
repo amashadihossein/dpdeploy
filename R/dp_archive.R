@@ -150,3 +150,40 @@ dp_archiveCore.s3_board <- function(conf, dp_name, pin_version,
 
   return(TRUE)
 }
+
+#' @keywords internal
+dp_archiveCore.local_board <- function(conf, dp_name, pin_version,
+                                       git_info, verbose = F, ...) {
+  if (verbose) {
+    print(glue::glue(
+      "Archiving {dp_name}, version {pin_version} from local or mounted folder"
+    ))
+  }
+  
+  
+  # define board and pin dp to local
+  pins::board_register(
+    board = "local",
+    name = conf$board_params$board_alias,
+    folder = file.path(conf$board_params$folder, "daap"),
+    versions = T
+  )
+  
+  # This is force data.txt sync prior to pinning to address pins bug where
+  # versions can be lost. Not sure if necessary for local board
+  ver_current <- pins::pin_versions(
+    name = dp_name,
+    board = conf$board_params$board_alias
+  )
+  
+  pins::pin_remove(name = dp_name, board = conf$board_params$board_alias)
+  
+  
+  # Update dpboard_log
+  dpboardlog_update(
+    conf = conf, git_info = git_info, dp_name = dp_name,
+    pin_version = pin_version
+  )
+  
+  return(TRUE)
+}
