@@ -153,7 +153,7 @@ dp_deployCore.local_board <- function(conf, project_path, d, dlog, git_info,
   pins::board_register(
     board = "local",
     name = conf$board_params$board_alias,
-    folder = file.path(conf$board_params$folder, "daap"),
+    cache = file.path(conf$board_params$folder, "daap"),
     versions = T
   )
   

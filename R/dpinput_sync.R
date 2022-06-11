@@ -147,7 +147,7 @@ init_board.local_board <- function(conf) {
   pins::board_register(
     board = "local",
     name = get_inputboard_alias(conf),
-    folder = file.path(conf$board_params$folder, "dpinput"),
+    cache = file.path(conf$board_params$folder, "dpinput"),
     versions = TRUE
   )
 }

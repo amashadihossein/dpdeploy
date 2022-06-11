@@ -165,7 +165,7 @@ dp_archiveCore.local_board <- function(conf, dp_name, pin_version,
   pins::board_register(
     board = "local",
     name = conf$board_params$board_alias,
-    folder = file.path(conf$board_params$folder, "daap"),
+    cache = file.path(conf$board_params$folder, "daap"),
     versions = T
   )
   
