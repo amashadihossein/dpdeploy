@@ -74,8 +74,8 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
                               dp_name = character(0),
                               pin_version = character(0)) {
   board_info <- dpconnect_check(board_params = conf$board_params)
-  in_daap_dir <- board_info$subpath == "daap" |
-    "daap" %in% basename(board_info$cache)
+  in_daap_dir <- isTRUE(board_info$subpath == "daap") |
+    isTRUE("daap" %in% basename(board_info$cache))
   
   if (!in_daap_dir) {
     stop(cli::format_error(glue::glue(
