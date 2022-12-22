@@ -16,7 +16,6 @@ dpbuild::is_valid_dp_repository
 #' @return git_info, a list containing git information
 #' @keywords internal
 gitinfo_validate <- function(project_path, verbose = F) {
-
   #--- Check git set up-------
   repo <- git2r::repository(path = project_path)
   last_commit <- git2r::last_commit(repo = repo)
