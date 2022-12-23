@@ -8,15 +8,14 @@
 #' @return synced_map this is input_map with sync status added to metadata
 #' @importFrom dplyr .data
 #' @export
-
 dpinput_sync <- function(conf, input_map, verbose = F, ...) {
-  
   # grab rewrite_ok if passed in ...
   args <- list(...)
   rewrite_ok <- args$rewrite_ok
-  if(length(rewrite_ok) == 0)
+  if (length(rewrite_ok) == 0) {
     rewrite_ok <- F
-  
+  }
+
   if (verbose) {
     cli::cli_alert_info(glue::glue(
       "Starting sync to the ",
@@ -174,43 +173,45 @@ to_description <- function(input_i) {
 # TODO: move syncedmap_rename and pathnames_reroot upstream to dpinput
 #' @keywords internal
 syncedmap_rename <- function(synced_map) {
+  rename_map <- pathnames_reroot(
+    pathnames = names(synced_map),
+    new_root = "input_files"
+  )
 
-  rename_map <- pathnames_reroot(pathnames = names(synced_map),
-                                 new_root = "input_files")
-  
   names(synced_map) <- rename_map[names(synced_map)]
-  
+
   # update id accordingly in metadata
-  synced_map <- purrr::modify_in(.x = synced_map,
-                                 .where = list(1,"metadata","id"),
-                                 .f = ~ .x %>% 
-                                   pathnames_reroot(pathnames = .) %>%
-                                   unname)
-                    
+  synced_map <- purrr::modify_in(
+    .x = synced_map,
+    .where = list(1, "metadata", "id"),
+    .f = ~ .x %>%
+      pathnames_reroot(pathnames = .) %>%
+      unname()
+  )
+
   invisible(synced_map)
 }
 
 #' @title Re-root path names
-#' @description if pathnames are of path format, it sets the root to `new_root` 
-#' dropping all upstream paths beyond `new_root`. If not of path format, it 
+#' @description if pathnames are of path format, it sets the root to `new_root`
+#' dropping all upstream paths beyond `new_root`. If not of path format, it
 #' keeps the pathnames unchanged
 #' @param pathnames a vector of characters to be re-rooted
 #' @param new_root a directory relative to which all paths be renamed
 #' @keywords internal
-pathnames_reroot <- function(pathnames, new_root = "input_files"){
-  
+pathnames_reroot <- function(pathnames, new_root = "input_files") {
   parsed_paths <- fs::path_split(pathnames) %>% `names<-`(pathnames)
-  
+
   pathnames_rerooted <- sapply(parsed_paths, function(path_i) {
     rename_i <- path_i
     if (length(path_i) > 1 & new_root %in% path_i) {
       rename_i <- paste0(path_i[which(path_i == new_root):length(path_i)],
-                         collapse = "/"
+        collapse = "/"
       )
     }
     rename_i
   }, simplify = T, USE.NAMES = T)
-  
+
   return(pathnames_rerooted)
 }
 
@@ -218,7 +219,6 @@ pathnames_reroot <- function(pathnames, new_root = "input_files"){
 sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
                          verbose) {
   synced_map <- purrr::map(.x = input_map, .f = function(input_i) {
-
     # This version coincidentally also addresses pins bug where data.txt can be
     # overwritten
     synced_versions <- pins::pin_versions(
@@ -227,11 +227,11 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
     )$version
 
     input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
-    
-    
+
+
     skip_pin_to_remote <- T
-    if(!input_i$metadata$id %in% skip_sync){
-      if(!input_i$metadata$synced | rewrite_ok){
+    if (!input_i$metadata$id %in% skip_sync) {
+      if (!input_i$metadata$synced | rewrite_ok) {
         skip_pin_to_remote <- F
       }
     }
@@ -243,8 +243,8 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
         " is already synced or chosen to be skipped"
       ))
     }
-    
-    
+
+
     if (!skip_pin_to_remote) {
       tmp_pind <- try(pins::pin(
         x = input_i$data,

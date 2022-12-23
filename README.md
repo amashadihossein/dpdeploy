@@ -7,6 +7,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-CMD-check](https://github.com/amashadihossein/dpdeploy/workflows/R-CMD-check/badge.svg)](https://github.com/amashadihossein/dpdeploy/actions)
 <!-- badges: end -->
 
 The goal of `dpdeploy` is to simplify and standardize how a data product
@@ -32,6 +33,11 @@ Assuming you have properly configured your project and workflow using
 `dpbuild`, only a single call is needed to deploy.
 
 ``` r
-library(dpdeploy)
 dpdeploy::dp_deploy(project_path = "<PATH_TO_PROJECT>")
 ```
+
+## Related documentation
+
+- `daapr`: <https://amashadihossein.github.io/daapr/>
+- `dpbuild`: <https://amashadihossein.github.io/dpbuild/>
+- `dpi`: <https://amashadihossein.github.io/dpi/>
