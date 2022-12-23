@@ -153,10 +153,6 @@ init_board.local_board <- function(conf) {
 
 #' @keywords internal
 get_inputboard_alias <- function(conf) {
-  # # TODO: this is a hack for evaluating a potential soln, to be fixed if worked
-  # if("local_board" %in% class(conf))
-  #   return(conf$board_params$board_alias)
-  
   inputboard_alias <- paste0(conf$board_params$board_alias, "_dpinput")
   return(inputboard_alias)
 }
