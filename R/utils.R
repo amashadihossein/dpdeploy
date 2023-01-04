@@ -73,8 +73,10 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
                               dp_name = character(0),
                               pin_version = character(0)) {
   board_info <- dpconnect_check(board_params = conf$board_params)
-
-  if (board_info$subpath != "daap") {
+  in_daap_dir <- isTRUE(board_info$subpath == "daap") |
+    isTRUE("daap" %in% basename(board_info$cache))
+  
+  if (!in_daap_dir) {
     stop(cli::format_error(glue::glue(
       "dpboard is not pointing to daap ",
       "subfolder on remote. Check board."
@@ -86,7 +88,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
       pins::pin_get(
         name = "dpboard-log",
         board = conf$board_params$board_alias,
-        files = F, cache = F
+        files = F, cache = board_info$board == "local"
       )
     },
     error = function(er) {
@@ -274,5 +276,8 @@ dpconnect_check <- function(board_params) {
       "dp_connect to connect first!"
     )))
   }
+  
+  # TODO: this function is almost identical to that found in dpi/util except
+  # here there is an invisible return. Harmonize and re-use
   invisible(board_info)
 }
