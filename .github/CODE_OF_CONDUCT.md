@@ -1,21 +1,19 @@
 # Contributor Covenant Code of Conduct
 
+## Definition 
+This Contributor Covenant Code of Conduct presents a set of guidelines for participating in __`daapr`__ project. It sets out expectations for behavior and helps to create a safe and welcoming environment for everyone involved. __`daapr`__ project incorporates several sub-packages including  __`dpbuild`__,  __`dpdeploy`__, and __`dpi`__.
+
 ## Our Pledge
 
-We as members, contributors, and leaders pledge to make participation in our
-community a harassment-free experience for everyone, regardless of age, body
-size, visible or invisible disability, ethnicity, sex characteristics, gender
-identity and expression, level of experience, education, socio-economic status,
-nationality, personal appearance, race, religion, or sexual identity and
-orientation.
+As members, contributors, and leaders in the development of __`daapr`__ project, we pledge to make participation a harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
 We pledge to act and interact in ways that contribute to an open, welcoming,
-diverse, inclusive, and healthy community.
+diverse, inclusive, respectful and healthy collaboration in the development of __`daapr`__ project.
 
 ## Our Standards
 
 Examples of behavior that contributes to a positive environment for our
-community include:
+ __`daapr`__ project include:
 
 * Demonstrating empathy and kindness toward other people
 * Being respectful of differing opinions, viewpoints, and experiences
@@ -23,7 +21,7 @@ community include:
 * Accepting responsibility and apologizing to those affected by our mistakes,
 and learning from the experience
 * Focusing on what is best not just for us as individuals, but for the overall
-community
+ __`daapr`__ project
 
 Examples of unacceptable behavior include:
 
@@ -35,15 +33,18 @@ advances of any kind
 address, without their explicit permission
 * Other conduct which could reasonably be considered inappropriate in a
 professional setting
+* Spamming or excessive self-promotion
+* Hacking or performing any malicious activities
+* Disrupting events or any project workflow
 
 ## Enforcement Responsibilities
 
-Community leaders are responsible for clarifying and enforcing our standards
+__`daapr`__ project owners are responsible for clarifying and enforcing our standards
 of acceptable behavior and will take appropriate and fair corrective action in
 response to any behavior that they deem inappropriate, threatening, offensive,
 or harmful.
 
-Community leaders have the right and responsibility to remove, edit, or reject
+__`daapr`__ project owners have the right and responsibility to remove, edit, or reject
 comments, commits, code, wiki edits, issues, and other contributions that are
 not aligned to this Code of Conduct, and will communicate reasons for moderation
 decisions when appropriate.
@@ -52,22 +53,22 @@ decisions when appropriate.
 
 This Code of Conduct applies within all community spaces, and also applies
 when an individual is officially representing the community in public spaces.
-Examples of representing our community include using an official e-mail
+Examples of representing in the __`daapr`__ project include using an official e-mail
 address, posting via an official social media account, or acting as an appointed
 representative at an online or offline event.
 
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at codeofconduct@rstudio.com. 
+reported to the __`daapr`__ owners responsible for enforcement at codeofconduct@rstudio.com <__EMAIL NEEDS TO BE CHANGED__>. 
 All complaints will be reviewed and investigated promptly and fairly.
 
-All community leaders are obligated to respect the privacy and security of the
+All __`daapr`__ owners are obligated to respect the privacy and security of the
 reporter of any incident.
 
 ## Enforcement Guidelines
 
-Community leaders will follow these Community Impact Guidelines in determining
+__`daapr`__ owners will follow these guidelines in determining
 the consequences for any action they deem in violation of this Code of Conduct:
 
 ### 1. Correction
@@ -75,7 +76,7 @@ the consequences for any action they deem in violation of this Code of Conduct:
 **Community Impact**: Use of inappropriate language or other behavior deemed
 unprofessional or unwelcome in the community.
 
-**Consequence**: A private, written warning from community leaders, providing
+**Consequence**: A private, written warning from __daapr__ project owners, providing
 clarity around the nature of the violation and an explanation of why the
 behavior was inappropriate. A public apology may be requested.
 
@@ -87,29 +88,28 @@ actions.
 **Consequence**: A warning with consequences for continued behavior. No
 interaction with the people involved, including unsolicited interaction with
 those enforcing the Code of Conduct, for a specified period of time. This
-includes avoiding interactions in community spaces as well as external channels
+includes avoiding interactions in __daapr__ project spaces as well as external channels
 like social media. Violating these terms may lead to a temporary or permanent
 ban.
 
 ### 3. Temporary Ban
 
-**Community Impact**: A serious violation of community standards, including
+**Community Impact**: A serious violation of set standards, including
 sustained inappropriate behavior.
 
 **Consequence**: A temporary ban from any sort of interaction or public
-communication with the community for a specified period of time. No public or
+communication in the project space for a specified period of time. No public or
 private interaction with the people involved, including unsolicited interaction
 with those enforcing the Code of Conduct, is allowed during this period.
 Violating these terms may lead to a permanent ban.
 
 ### 4. Permanent Ban
 
-**Community Impact**: Demonstrating a pattern of violation of community
+**Community Impact**: Demonstrating a pattern of violation of set
 standards, including sustained inappropriate behavior, harassment of an
 individual, or aggression toward or disparagement of classes of individuals.
 
-**Consequence**: A permanent ban from any sort of public interaction within the
-community.
+**Consequence**: A permanent ban from any sort of public interaction from the project space.
 
 ## Attribution
 
