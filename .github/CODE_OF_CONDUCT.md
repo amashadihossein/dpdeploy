@@ -1,6 +1,6 @@
 ## Contributing to __daapr__ development
 
-__`daapr`__ project incorporates several sub-packages including  __`dpbuild`__,  __`dpdeploy`__, and __`dpi`__. You are encouraged to participate in the __daapr__ development and share your ideas to improve upon the current state of the project. You can do so by
+__daapr__ project incorporates several sub-packages including  __`dpbuild`__,  __`dpdeploy`__, and __`dpi`__. You are encouraged to participate in the __daapr__ development and share your ideas to improve upon the current state of the project. You can do so by
 
 1. Filing a bug report or feature request using GitHub issue [here](https://github.com/amashadihossein/daapr/issues).
 2. Making a pull request [here](https://github.com/amashadihossein/daapr/pulls).
@@ -33,7 +33,7 @@ Before submitting your PR, please double check that it only contains the intende
 
 Please follow a consistent and uniform coding style throughout the code which makes it simpler to navigate the code.
 
-When a new function or parameter/s is/are added to the package, please make sure to document them with `roxygen2` and run your code changes with `devtools::document` before submitting the PR.
+When a new function or parameter/s is/are added to the package, please make sure to document them with `roxygen2` and run your code changes with `devtools::document()` before submitting the PR.
 
 When adding new functionality, please consider a way to implement it with minimal impact on existing code.
 
