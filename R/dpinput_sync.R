@@ -110,7 +110,7 @@ init_board.s3_board <- function(conf) {
   if (aws_creds$key == "" | aws_creds$secret == "") {
     if (aws_creds$profile_name == "") {
       stop(cli::format_error(glue::glue(
-        "Please check aws credentials. You need",
+        "Please check aws credentials. You need ",
         "to provide either key and secret or ",
         "valid profile name"
       )))
