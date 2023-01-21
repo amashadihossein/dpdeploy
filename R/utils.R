@@ -249,14 +249,14 @@ get_pin_version <- function(d, pin_name, pin_description) {
 
 
 #' @title Get dlog
-#' @description Reads and format daap_log.yml pasting values is key:value
-#' pairs with delimitter " > "
+#' @description Reads and format daap_log.yml pasting values in key:value
+#' pairs at depth 2 with delimitter " > "
 #' @return dlog
 #' @keywords internal
 get_dlog <- function(project_path) {
   dlog <- yaml::read_yaml(file = glue::glue("{project_path}/.daap/daap_log.yaml"))
   dlog <- purrr::modify_depth(
-    .x = dlog, .depth = 2,
+    .x = dlog, .depth = 2, .ragged = T,
     .f = function(x) paste0(x, collapse = " > ")
   )
   return(dlog)

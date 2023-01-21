@@ -10,7 +10,7 @@ get_dlog(project_path)
 dlog
 }
 \description{
-Reads and format daap_log.yml making pasting values is key:value
-pairs with delimmitter " > "
+Reads and format daap_log.yml pasting values in key:value
+pairs at depth 2 with delimitter " > "
 }
 \keyword{internal}
