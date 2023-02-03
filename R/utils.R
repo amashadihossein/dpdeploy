@@ -75,7 +75,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
   board_info <- dpconnect_check(board_params = conf$board_params)
   in_daap_dir <- isTRUE(board_info$subpath == "daap") |
     isTRUE("daap" %in% basename(board_info$cache))
-  
+
   if (!in_daap_dir) {
     stop(cli::format_error(glue::glue(
       "dpboard is not pointing to daap ",
@@ -249,14 +249,14 @@ get_pin_version <- function(d, pin_name, pin_description) {
 
 
 #' @title Get dlog
-#' @description Reads and format daap_log.yml making pasting values is key:value
-#' pairs with delimmitter " > "
+#' @description Reads and format daap_log.yml pasting values in key:value
+#' pairs at depth 2 with delimitter " > "
 #' @return dlog
 #' @keywords internal
 get_dlog <- function(project_path) {
   dlog <- yaml::read_yaml(file = glue::glue("{project_path}/.daap/daap_log.yaml"))
   dlog <- purrr::modify_depth(
-    .x = dlog, .depth = 2,
+    .x = dlog, .depth = 2, .ragged = T,
     .f = function(x) paste0(x, collapse = " > ")
   )
   return(dlog)
@@ -276,7 +276,7 @@ dpconnect_check <- function(board_params) {
       "dp_connect to connect first!"
     )))
   }
-  
+
   # TODO: this function is almost identical to that found in dpi/util except
   # here there is an invisible return. Harmonize and re-use
   invisible(board_info)

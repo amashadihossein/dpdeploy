@@ -1,126 +1,45 @@
-# Contributor Covenant Code of Conduct
+## Contributing to __daapr__ development
 
-## Our Pledge
+__daapr__ project incorporates several sub-packages including  __`dpbuild`__,  __`dpdeploy`__, and __`dpi`__. You are encouraged to participate in the __daapr__ development and share your ideas to improve upon the current state of the project. You can do so by
 
-We as members, contributors, and leaders pledge to make participation in our
-community a harassment-free experience for everyone, regardless of age, body
-size, visible or invisible disability, ethnicity, sex characteristics, gender
-identity and expression, level of experience, education, socio-economic status,
-nationality, personal appearance, race, religion, or sexual identity and
-orientation.
+1. Filing a bug report or feature request using GitHub issue [here](https://github.com/amashadihossein/daapr/issues).
+2. Making a pull request [here](https://github.com/amashadihossein/daapr/pulls).
 
-We pledge to act and interact in ways that contribute to an open, welcoming,
-diverse, inclusive, and healthy community.
+Note that by participating in this project, you agree to comply with this [Contributor Covenant](https://www.contributor-covenant.org/version/2/0/code_of_conduct.html).
 
-## Our Standards
+You can follow the following guidelines when filing an issue or making a pull request;
 
-Examples of behavior that contributes to a positive environment for our
-community include:
+#### Filing an issue
+When reporting a bug or problem, it is crucial to incorporate minimal and reproducible example of the problem so that the problem can be quickly identified and verified. For an issue to be reproducible, three essential components are to be provided: necessary packages, data, and code along with instructions on how to run the code.Below are few tips that you can utilize when filing an issue
 
-* Demonstrating empathy and kindness toward other people
-* Being respectful of differing opinions, viewpoints, and experiences
-* Giving and gracefully accepting constructive feedback
-* Accepting responsibility and apologizing to those affected by our mistakes,
-and learning from the experience
-* Focusing on what is best not just for us as individuals, but for the overall
-community
+1. Make sure you load required packages at the top off the script
+2. Include sample non-sensitive data
+3. Make sure the code is readable and concise.
+4. Add comments to clarify the code steps and remove any unrelated codes
 
-Examples of unacceptable behavior include:
+#### Making pull request
 
-* The use of sexualized language or imagery, and sexual attention or
-advances of any kind
-* Trolling, insulting or derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or email
-address, without their explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
-professional setting
+In order to contribute to __daapr__ project, these are the steps you should follow;
 
-## Enforcement Responsibilities
+1. Fork or create a new branch out of the **dev** version of the package and make required changes
+2. Push the branch to GitHub and make a pull request (PR)
+3. Explain the requested changes in the PR
+4. Repeat steps 1-3 until the PR is accepted or it is determined that the changes are suitable for __daapr__
 
-Community leaders are responsible for clarifying and enforcing our standards
-of acceptable behavior and will take appropriate and fair corrective action in
-response to any behavior that they deem inappropriate, threatening, offensive,
-or harmful.
+When making the PR, make sure that your PR should clearly state the reason for the change and how it addresses
+a problem. You should also provide a brief but clear explanation of how the proposed solution in the PR solves it succinctly.
 
-Community leaders have the right and responsibility to remove, edit, or reject
-comments, commits, code, wiki edits, issues, and other contributions that are
-not aligned to this Code of Conduct, and will communicate reasons for moderation
-decisions when appropriate.
+Before submitting your PR, please double check that it only contains the intended changes, and no unrelated modifications are being requested to be pulled. This will make it easier for us to review the changes and evaluate any potential unintended consequences.
 
-## Scope
+Please follow a consistent and uniform coding style throughout the code which makes it simpler to navigate the code.
 
-This Code of Conduct applies within all community spaces, and also applies
-when an individual is officially representing the community in public spaces.
-Examples of representing our community include using an official e-mail
-address, posting via an official social media account, or acting as an appointed
-representative at an online or offline event.
+When a new function or parameter/s is/are added to the package, please make sure to document them with `roxygen2` and run your code changes with `devtools::document()` before submitting the PR.
 
-## Enforcement
+When adding new functionality, please consider a way to implement it with minimal impact on existing code.
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at codeofconduct@rstudio.com. 
-All complaints will be reviewed and investigated promptly and fairly.
-
-All community leaders are obligated to respect the privacy and security of the
-reporter of any incident.
-
-## Enforcement Guidelines
-
-Community leaders will follow these Community Impact Guidelines in determining
-the consequences for any action they deem in violation of this Code of Conduct:
-
-### 1. Correction
-
-**Community Impact**: Use of inappropriate language or other behavior deemed
-unprofessional or unwelcome in the community.
-
-**Consequence**: A private, written warning from community leaders, providing
-clarity around the nature of the violation and an explanation of why the
-behavior was inappropriate. A public apology may be requested.
-
-### 2. Warning
-
-**Community Impact**: A violation through a single incident or series of
-actions.
-
-**Consequence**: A warning with consequences for continued behavior. No
-interaction with the people involved, including unsolicited interaction with
-those enforcing the Code of Conduct, for a specified period of time. This
-includes avoiding interactions in community spaces as well as external channels
-like social media. Violating these terms may lead to a temporary or permanent
-ban.
-
-### 3. Temporary Ban
-
-**Community Impact**: A serious violation of community standards, including
-sustained inappropriate behavior.
-
-**Consequence**: A temporary ban from any sort of interaction or public
-communication with the community for a specified period of time. No public or
-private interaction with the people involved, including unsolicited interaction
-with those enforcing the Code of Conduct, is allowed during this period.
-Violating these terms may lead to a permanent ban.
-
-### 4. Permanent Ban
-
-**Community Impact**: Demonstrating a pattern of violation of community
-standards, including sustained inappropriate behavior, harassment of an
-individual, or aggression toward or disparagement of classes of individuals.
-
-**Consequence**: A permanent ban from any sort of public interaction within the
-community.
-
-## Attribution
-
-This Code of Conduct is adapted from the [Contributor Covenant][homepage],
+#### Attribution
+This Code of Conduct references content from the [Contributor Covenant](https://www.contributor-covenant.org/version/2/0/code_of_conduct.html),
 version 2.0,
 available at <https://www.contributor-covenant.org/version/2/0/code_of_conduct.html>.
 
-Community Impact Guidelines were inspired by [Mozilla's code of conduct
-enforcement ladder](https://github.com/mozilla/diversity).
-
-[homepage]: https://www.contributor-covenant.org
-
-For answers to common questions about this code of conduct, see the FAQ at
-<https://www.contributor-covenant.org/faq>. Translations are available at <https://www.contributor-covenant.org/translations>.
+This document references content from the [contributing to tmle3 development](https://www.contributor-covenant.org/version/2/0/code_of_conduct.html).
