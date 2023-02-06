@@ -1,4 +1,4 @@
-## Contributing to __daapr__ development
+# Contributing to __daapr__ development
 
 __daapr__ project incorporates several sub-packages including  __`dpbuild`__,  __`dpdeploy`__, and __`dpi`__. You are encouraged to participate in the __daapr__ development and share your ideas to improve upon the current state of the project. You can do so by
 
