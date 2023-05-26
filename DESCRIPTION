@@ -20,7 +20,7 @@ Imports:
     glue,
     lifecycle,
     magrittr,
-    pins (== 0.4.5.9001),
+    pins (>= 1.2.0),
     purrr,
     Rlabkey,
     rlang (>= 0.4.11),
