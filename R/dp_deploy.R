@@ -69,7 +69,7 @@ dp_deployCore.labkey_board <- function(conf, project_path, d, dlog, git_info,
     board = conf$board_params$board_alias
   )
 
-  pins::pin(
+  pins::pin_write(
     x = d,
     name = attr(d, "dp_name"),
     board = conf$board_params$board_alias,
@@ -108,15 +108,13 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
       aws.signature::locate_credentials(profile = aws_creds$profile_name)$secret
   }
 
-  pins::board_register(
-    board = "s3",
-    name = conf$board_params$board_alias,
+  pins::board_s3(
+    prefix = "daap/",
     bucket = conf$board_params$bucket_name,
-    versions = TRUE,
-    key = aws_creds$key,
-    secret = aws_creds$secret,
     region = conf$board_params$region,
-    path = "daap"
+    access_key = aws_creds$key,
+    secret_access_key = aws_creds$secret,
+    versioned = T
   )
 
   # This is force data.txt sync prior to pinning to address pins bug where
@@ -126,7 +124,7 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
     board = conf$board_params$board_alias
   )
 
-  pins::pin(
+  pins::pin_write(
     x = d,
     name = as.character(attr(d, "dp_name")),
     board = conf$board_params$board_alias,
@@ -146,8 +144,8 @@ dp_deployCore.local_board <- function(conf, project_path, d, dlog, git_info,
   if (verbose) {
     print(glue::glue("Deploying to local or mounted drive"))
   }
-  
-  
+
+
   # define board and pin dp to labkey
   pins::board_register(
     board = "local",
@@ -155,24 +153,24 @@ dp_deployCore.local_board <- function(conf, project_path, d, dlog, git_info,
     cache = file.path(conf$board_params$folder, "daap"),
     versions = T
   )
-  
+
   # This is force data.txt sync prior to pinning to address pins bug where
   # versions can be lost. not sure necessary for local board but not harmful
   ver_current <- pins::pin_versions(
     name = as.character(attr(d, "dp_name")),
     board = conf$board_params$board_alias
   )
-  
-  pins::pin(
+
+  pins::pin_write(
     x = d,
     name = attr(d, "dp_name"),
     board = conf$board_params$board_alias,
     description = attr(d, "branch_description")
   )
-  
-  
+
+
   # Update dpboard_log
   dpboardlog_update(conf = conf, dlog = dlog, git_info = git_info)
-  
+
   return(TRUE)
 }

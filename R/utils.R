@@ -85,7 +85,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
 
   dpboard_log <- tryCatch(
     expr = {
-      pins::pin_get(
+      pins::pin_read(
         name = "dpboard-log",
         board = conf$board_params$board_alias,
         files = F, cache = board_info$board == "local"
@@ -152,7 +152,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
       board = conf$board_params$board_alias
     )
 
-    pins::pin(
+    pins::pin_write(
       x = dpboard_log,
       name = "dpboard-log",
       board = conf$board_params$board_alias,
@@ -201,7 +201,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
     name = "dpboard-log",
     board = conf$board_params$board_alias
   )
-  pins::pin(
+  pins::pin_write(
     x = dpboard_log,
     name = "dpboard-log",
     board = conf$board_params$board_alias,
@@ -228,9 +228,8 @@ get_pin_version <- function(d, pin_name, pin_description) {
 
   pins::board_register_local(name = "daap_internal", version = T)
 
-
-  pins::pin_remove(name = pin_name, board = "daap_internal")
-  pins::pin(
+  pins::pin_delete(names = pin_name, board = "daap_internal")
+  pins::pin_write(
     x = d,
     name = pin_name,
     board = "daap_internal",
@@ -239,10 +238,10 @@ get_pin_version <- function(d, pin_name, pin_description) {
 
   pin_version <- pins::pin_versions(
     name = pin_name,
-    board = "daap_internal",
-    full = F
+    board = "daap_internal"#,
+    # full = F
   ) %>% dplyr::pull(.data$version)
-  pins::pin_remove(name = pin_name, board = "daap_internal")
+  pins::pin_delete(names = pin_name, board = "daap_internal")
 
   return(pin_version)
 }

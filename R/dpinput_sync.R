@@ -129,14 +129,14 @@ init_board.s3_board <- function(conf) {
     aws_secret = aws_creds$secret
   )
 
-  pins::board_register_s3(
+  pins::board_s3(
     name = get_inputboard_alias(conf),
     bucket = input_params$bucket_name,
-    key = input_params$aws_key,
-    secret = input_params$aws_secret,
-    path = "dpinput",
+    access_key = input_params$aws_key,
+    secret_access_key = input_params$aws_secret,
+    prefix = "dpinput/",
     region = input_params$region,
-    versions = TRUE
+    versioned = TRUE
   )
 }
 
@@ -242,7 +242,7 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
 
 
     if (!skip_pin_to_remote) {
-      tmp_pind <- try(pins::pin(
+      tmp_pind <- try(pins::pin_write(
         x = input_i$data,
         name = input_i$metadata$name,
         board = inputboard_alias,
