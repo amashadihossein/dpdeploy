@@ -51,7 +51,6 @@ dp_deployCore.labkey_board <- function(conf, project_path, d, dlog, git_info,
     print(glue::glue("Deploying to Labkey remote"))
   }
 
-
   # define board and pin dp to labkey
   pins::board_register(
     board = "labkey",
