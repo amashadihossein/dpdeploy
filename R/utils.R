@@ -226,23 +226,27 @@ get_pin_version <- function(d, pin_name, pin_description) {
   pin_name <- as.character(pin_name)
   pin_description <- as.character(pin_description)
 
-  pins::board_register_local(name = "daap_internal", version = T)
+  local_board_folder <- pins::board_folder(path = "daap_internal", versioned = T)
 
-  pins::pin_delete(names = pin_name, board = "daap_internal")
+  pin_name_exists <- pins::pin_exists(board = local_board_folder, name = pin_name)
+
+  if (pin_name_exists) {
+    pins::pin_delete(names = pin_name, board = local_board_folder)
+  }
+
   pins::pin_write(
     x = d,
     name = pin_name,
-    board = "daap_internal",
+    board = local_board_folder,
     description = pin_description
   )
 
   pin_version <- pins::pin_versions(
     name = pin_name,
-    board = "daap_internal"#,
-    # full = F
+    board = local_board_folder
   ) %>% dplyr::pull(.data$version)
-  pins::pin_delete(names = pin_name, board = "daap_internal")
 
+  pins::pin_delete(names = pin_name, board = local_board_folder)
   return(pin_version)
 }
 
