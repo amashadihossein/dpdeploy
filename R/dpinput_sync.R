@@ -130,12 +130,11 @@ init_board.s3_board <- function(conf) {
   )
 
   pins::board_s3(
-    name = get_inputboard_alias(conf),
-    bucket = input_params$bucket_name,
-    access_key = input_params$aws_key,
-    secret_access_key = input_params$aws_secret,
     prefix = "dpinput/",
-    region = input_params$region,
+    bucket = conf$board_params$bucket_name,
+    region = conf$board_params$region,
+    access_key = aws_creds$key,
+    secret_access_key = aws_creds$secret,
     versioned = TRUE
   )
 }
