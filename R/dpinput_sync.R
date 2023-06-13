@@ -53,11 +53,11 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
   })
 
 
-  init_board(conf = conf)
+  board <- init_board(conf = conf)
 
   synced_map <- sync_iterate(
     input_map = input_map,
-    inputboard_alias = get_inputboard_alias(conf),
+    inputboard_alias = board, #get_inputboard_alias(conf),
     skip_sync = skip_sync,
     rewrite_ok = rewrite_ok,
     verbose = verbose
@@ -219,7 +219,7 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
     synced_versions <- pins::pin_versions(
       name = input_i$metadata$name,
       board = inputboard_alias
-    )$version
+    )$hash
 
     input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
 
