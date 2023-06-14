@@ -226,7 +226,6 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
       )$hash
 
       input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
-    }
 
     skip_pin_to_remote <- T
     if (!input_i$metadata$id %in% skip_sync) {
@@ -269,7 +268,7 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
         ))
       }
     }
-
+  }
     input_i
   })
 
