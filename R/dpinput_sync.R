@@ -216,13 +216,17 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
   synced_map <- purrr::map(.x = input_map, .f = function(input_i) {
     # This version coincidentally also addresses pins bug where data.txt can be
     # overwritten
-    synced_versions <- pins::pin_versions(
-      name = input_i$metadata$name,
-      board = inputboard_alias
-    )$hash
 
-    input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
+    pin_name_exists <- pins::pin_exists(board = inputboard_alias, name = input_i$metadata$name)
 
+    if (pin_name_exists) {
+      synced_versions <- pins::pin_versions(
+        name = input_i$metadata$name,
+        board = inputboard_alias
+      )$hash
+
+      input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
+    }
 
     skip_pin_to_remote <- T
     if (!input_i$metadata$id %in% skip_sync) {
