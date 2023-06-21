@@ -223,7 +223,7 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
       synced_versions <- pins::pin_versions(
         name = input_i$metadata$name,
         board = inputboard_alias
-      )$hash
+      )$version
 
       input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
     } else {
