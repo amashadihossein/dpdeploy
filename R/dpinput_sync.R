@@ -38,6 +38,8 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
     return(input_map$input_obj)
   }
 
+  board <- init_board(conf = conf)
+
   # Add pin version and description
   input_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
     if (!input_i$metadata$id %in% skip_sync) {
@@ -53,9 +55,6 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
     }
     input_i
   })
-
-
-  board <- init_board(conf = conf)
 
   synced_map <- sync_iterate(
     input_map = input_map,
