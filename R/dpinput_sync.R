@@ -42,12 +42,14 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
   input_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
     if (!input_i$metadata$id %in% skip_sync) {
       input_i$metadata$description <- to_description(input_i = input_i)
-      input_i$metadata$pin_version <-
-        get_pin_version(
-          d = input_i$data,
-          pin_name = input_i$metadata$name,
-          pin_description = input_i$metadata$description
-        )
+      input_i$metadata$pin_version <- pins::pin_versions(
+        name = input_i$metadata$name,
+        board = board)$version
+        # get_pin_version(
+        #   d = input_i$data,
+        #   pin_name = input_i$metadata$name,
+        #   pin_description = input_i$metadata$description
+        # )
     }
     input_i
   })
