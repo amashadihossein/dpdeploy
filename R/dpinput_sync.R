@@ -232,11 +232,11 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
     }
 
     skip_pin_to_remote <- T
-    if (!input_i$metadata$id %in% skip_sync) {
+    # if (!input_i$metadata$id %in% skip_sync) {
       if (!input_i$metadata$synced | rewrite_ok) {
         skip_pin_to_remote <- F
       }
-    }
+    # }
 
     if (verbose & skip_pin_to_remote) {
       cli::cli_alert_info(glue::glue(
