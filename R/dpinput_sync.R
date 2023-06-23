@@ -257,9 +257,9 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
 
       # # Add pin version and description
 
-    input_i$metadata$description <- to_description(input_i = input_i)
-    input_i$metadata$pin_version <- pins::pin_versions(
-      name = input_i$metadata$name, board = board)$version
+    # input_i$metadata$description <- to_description(input_i = input_i)
+    # input_i$metadata$pin_version <- pins::pin_versions(
+    #   name = input_i$metadata$name, board = board)$version
 
       input_i$metadata$synced <- TRUE
       sync_attempt_state <- "completed"
