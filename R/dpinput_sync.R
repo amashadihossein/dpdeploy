@@ -39,22 +39,21 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
   }
 
   # Add pin version and description
-  input_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
-    if (!input_i$metadata$id %in% skip_sync) {
-      input_i$metadata$description <- to_description(input_i = input_i)
-      # input_i$metadata$pin_version <- pins::pin_versions(
-        # name = input_i$metadata$name,
-        # board = board)$version
-
-        get_pin_version(
-          d = input_i$data,
-          pin_name = input_i$metadata$name,
-          pin_description = input_i$metadata$description
-        )
-    }
-    input_i
-  })
-
+  # input_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
+  #   if (!input_i$metadata$id %in% skip_sync) {
+  #     input_i$metadata$description <- to_description(input_i = input_i)
+  #     # input_i$metadata$pin_version <- pins::pin_versions(
+  #       # name = input_i$metadata$name,
+  #       # board = board)$version
+  #
+  #       get_pin_version(
+  #         d = input_i$data,
+  #         pin_name = input_i$metadata$name,
+  #         pin_description = input_i$metadata$description
+  #       )
+  #   }
+  #   input_i
+  # })
 
   board <- init_board(conf = conf)
 
@@ -216,39 +215,39 @@ pathnames_reroot <- function(pathnames, new_root = "input_files") {
 #' @keywords internal
 sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
                          verbose) {
-  synced_map <- purrr::map(.x = input_map, .f = function(input_i) {
+  input_map <- purrr::map(.x = input_map, .f = function(input_i) {
     # This version coincidentally also addresses pins bug where data.txt can be
     # overwritten
 
-    pin_name_exists <- pins::pin_exists(board = inputboard_alias, name = input_i$metadata$name)
+    # pin_name_exists <- pins::pin_exists(board = inputboard_alias, name = input_i$metadata$name)
+    #
+    # if (pin_name_exists) {
+    #   synced_versions <- pins::pin_versions(
+    #     name = input_i$metadata$name,
+    #     board = inputboard_alias
+    #   )$version
+    #
+    #   input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
+    # } else {
+    #   input_i$metadata$synced <- F
+    # }
+    #
+    # skip_pin_to_remote <- T
+    # if (!input_i$metadata$id %in% skip_sync) {
+    #   if (!input_i$metadata$synced | rewrite_ok) {
+    #     skip_pin_to_remote <- F
+    #   }
+    # }
+    #
+    # if (verbose & skip_pin_to_remote) {
+    #   cli::cli_alert_info(glue::glue(
+    #     "Input {input_i$metadata$name}",
+    #     ", version {input_i$metadata$pin_version}",
+    #     " is already synced or chosen to be skipped"
+    #   ))
+    # }
 
-    if (pin_name_exists) {
-      synced_versions <- pins::pin_versions(
-        name = input_i$metadata$name,
-        board = inputboard_alias
-      )$version
-
-      input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
-    } else {
-      input_i$metadata$synced <- F
-    }
-
-    skip_pin_to_remote <- T
-    if (!input_i$metadata$id %in% skip_sync) {
-      if (!input_i$metadata$synced | rewrite_ok) {
-        skip_pin_to_remote <- F
-      }
-    }
-
-    if (verbose & skip_pin_to_remote) {
-      cli::cli_alert_info(glue::glue(
-        "Input {input_i$metadata$name}",
-        ", version {input_i$metadata$pin_version}",
-        " is already synced or chosen to be skipped"
-      ))
-    }
-
-
+    skip_pin_to_remote <- F
     if (!skip_pin_to_remote) {
       tmp_pind <- try(pins::pin_write(
         x = input_i$data,
@@ -273,6 +272,28 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
           " {sync_attempt_state}"
         ))
       }
+    }
+    input_i
+  })
+
+  synced_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
+    if (T) {
+      pv <- pins::pin_versions(
+        name = input_i$metadata$name,
+        board = inputboard_alias
+      )$version
+
+      print(class(pv))
+      print(pv)
+      print(sort(pv, decreasing = T))
+
+      if (length(pv) > 1) {
+        latest_pin_version  <- sort(pv)[length(pv)]
+      } else {
+        latest_pin_version <- pv
+      }
+
+      input_i$pin_version  <- latest_pin_version
     }
     input_i
   })
