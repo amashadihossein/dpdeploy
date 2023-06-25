@@ -215,7 +215,7 @@ pathnames_reroot <- function(pathnames, new_root = "input_files") {
 #' @keywords internal
 sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
                          verbose) {
-  input_map <- purrr::map(.x = input_map, .f = function(input_i) {
+  synced_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
     # This version coincidentally also addresses pins bug where data.txt can be
     # overwritten
 
@@ -272,12 +272,7 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
           " {sync_attempt_state}"
         ))
       }
-    }
-    input_i
-  })
 
-  synced_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
-    if (T) {
       pv <- pins::pin_versions(
         name = input_i$metadata$name,
         board = inputboard_alias
