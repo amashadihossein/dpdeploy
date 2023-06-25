@@ -273,22 +273,22 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
         ))
       }
 
-      pv <- pins::pin_versions(
+      get_remote_pin_version <- pins::pin_versions(
         name = input_i$metadata$name,
         board = inputboard_alias
       )$version
 
-      print(class(pv))
-      print(pv)
-      print(sort(pv, decreasing = T))
+      print(class(get_remote_pin_version))
+      print(get_remote_pin_version)
+      print(sort(get_remote_pin_version, decreasing = T))
 
-      if (length(pv) > 1) {
-        latest_pin_version  <- sort(pv)[length(pv)]
+      if (length(get_remote_pin_version) > 1) {
+        latest_pin_version  <- sort(get_remote_pin_version)[length(get_remote_pin_version)]
       } else {
-        latest_pin_version <- pv
+        latest_pin_version <- get_remote_pin_version
       }
 
-      input_i$pin_version  <- latest_pin_version
+      input_i$metadata$pin_version  <- latest_pin_version
     }
     input_i
   })
