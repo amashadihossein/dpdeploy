@@ -265,14 +265,6 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
         sync_alrt <- cli::cli_alert_warning
       }
 
-      if (verbose) {
-        sync_alrt(glue::glue(
-          "Input {input_i$metadata$name}, version ",
-          "{input_i$metadata$pin_version} --> sync",
-          " {sync_attempt_state}"
-        ))
-      }
-
       get_remote_pin_version <- pins::pin_versions(
         name = input_i$metadata$name,
         board = inputboard_alias
@@ -289,6 +281,14 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
       }
 
       input_i$metadata$pin_version  <- latest_pin_version
+
+      if (verbose) {
+        sync_alrt(glue::glue(
+          "Input {input_i$metadata$name}, version ",
+          "{input_i$metadata$pin_version} --> sync",
+          " {sync_attempt_state}"
+        ))
+      }
     }
     input_i
   })
