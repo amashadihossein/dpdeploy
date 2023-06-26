@@ -72,9 +72,19 @@ gitinfo_validate <- function(project_path, verbose = F) {
 dpboardlog_update <- function(conf, git_info, dlog = NULL,
                               dp_name = character(0),
                               pin_version = character(0)) {
-  board_info <- dpconnect_check(board_params = conf$board_params)
-  in_daap_dir <- isTRUE(board_info$subpath == "daap") |
-    isTRUE("daap" %in% basename(board_info$cache))
+
+  board_object <-  dpi::dp_connect(
+    board_params = conf$board_params, creds = conf$creds,
+    board_subdir = file.path("daap/")
+  )
+
+  in_daap_dir <- rev(unlist(strsplit(
+    x = board_object$prefix,
+    split = "/")))[1] == "daap"
+
+  # board_info <- dpconnect_check(board_params = conf$board_params)
+  # in_daap_dir <- isTRUE(board_info$subpath == "daap") |
+  #   isTRUE("daap" %in% basename(board_info$cache))
 
   if (!in_daap_dir) {
     stop(cli::format_error(glue::glue(
@@ -87,8 +97,8 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
     expr = {
       pins::pin_read(
         name = "dpboard-log",
-        board = conf$board_params$board_alias,
-        files = F, cache = board_info$board == "local"
+        board = board_object #,
+        # files = F, cache = board_info$board == "local"
       )
     },
     error = function(er) {
@@ -147,15 +157,15 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
 
     # This is force data.txt sync prior to pinning to address pins bug where
     # versions can be lost
-    ver_current <- pins::pin_versions(
-      name = "dpboard-log",
-      board = conf$board_params$board_alias
-    )
+    # ver_current <- pins::pin_versions(
+    #   name = "dpboard-log",
+    #   board = conf$board_params$board_alias
+    # )
 
     pins::pin_write(
       x = dpboard_log,
       name = "dpboard-log",
-      board = conf$board_params$board_alias,
+      board = board_object,
       description = "Data Product Log"
     )
 
@@ -197,14 +207,15 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
 
   # This is force data.txt sync prior to pinning to address pins bug where
   # versions can be lost
-  ver_current <- pins::pin_versions(
-    name = "dpboard-log",
-    board = conf$board_params$board_alias
-  )
+  # ver_current <- pins::pin_versions(
+  #   name = "dpboard-log",
+  #   board = conf$board_params$board_alias
+  # )
+
   pins::pin_write(
     x = dpboard_log,
     name = "dpboard-log",
-    board = conf$board_params$board_alias,
+    board = board_object,
     description = "Data Product Log"
   )
 

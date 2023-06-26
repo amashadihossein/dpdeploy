@@ -119,11 +119,10 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
 
   # This is force data.txt sync prior to pinning to address pins bug where
   # versions can be lost
-  #TODO: Remove this code chunk
-  ver_current <- pins::pin_versions(
-    name = as.character(attr(d, "dp_name")),
-    board = conf$board_params$board_alias
-  )
+  # ver_current <- pins::pin_versions(
+  #   name = as.character(attr(d, "dp_name")),
+  #   board = conf$board_params$board_alias
+  # )
 
   pins::pin_write(
     x = d,
