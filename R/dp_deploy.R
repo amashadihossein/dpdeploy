@@ -108,8 +108,8 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
       aws.signature::locate_credentials(profile = aws_creds$profile_name)$secret
   }
 
-  pins::board_s3(
-    prefix = "daap/",
+  board <- pins::board_s3(
+    prefix = file.path("daap/"),
     bucket = conf$board_params$bucket_name,
     region = conf$board_params$region,
     access_key = aws_creds$key,
@@ -119,6 +119,7 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
 
   # This is force data.txt sync prior to pinning to address pins bug where
   # versions can be lost
+  #TODO: Remove this code chunk
   ver_current <- pins::pin_versions(
     name = as.character(attr(d, "dp_name")),
     board = conf$board_params$board_alias
@@ -127,7 +128,7 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
   pins::pin_write(
     x = d,
     name = as.character(attr(d, "dp_name")),
-    board = conf$board_params$board_alias,
+    board = board,
     description = as.character(attr(d, "branch_description"))
   )
 

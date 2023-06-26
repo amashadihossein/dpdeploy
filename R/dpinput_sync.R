@@ -270,6 +270,8 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
         board = inputboard_alias
       )$version
 
+      input_i$metadata$description <- to_description(input_i = input_i)
+
       print(class(get_remote_pin_version))
       print(get_remote_pin_version)
       print(sort(get_remote_pin_version, decreasing = T))
