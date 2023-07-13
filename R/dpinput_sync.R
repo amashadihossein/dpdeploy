@@ -38,28 +38,11 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
     return(input_map$input_obj)
   }
 
-  # Add pin version and description
-  # input_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
-  #   if (!input_i$metadata$id %in% skip_sync) {
-  #     input_i$metadata$description <- to_description(input_i = input_i)
-  #     # input_i$metadata$pin_version <- pins::pin_versions(
-  #       # name = input_i$metadata$name,
-  #       # board = board)$version
-  #
-  #       get_pin_version(
-  #         d = input_i$data,
-  #         pin_name = input_i$metadata$name,
-  #         pin_description = input_i$metadata$description
-  #       )
-  #   }
-  #   input_i
-  # })
-
   board <- init_board(conf = conf)
 
   synced_map <- sync_iterate(
     input_map = input_map,
-    inputboard_alias = board, #get_inputboard_alias(conf),
+    board_object = board, #get_inputboard_alias(conf),
     skip_sync = skip_sync,
     rewrite_ok = rewrite_ok,
     verbose = verbose
@@ -74,7 +57,6 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
         isTRUE()
     }
   ) %>% unlist()
-
 
   sync_fails <- to_be_synced[!was_synced]
 
@@ -213,46 +195,30 @@ pathnames_reroot <- function(pathnames, new_root = "input_files") {
 }
 
 #' @keywords internal
-sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
+sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
                          verbose) {
   synced_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
-    # This version coincidentally also addresses pins bug where data.txt can be
-    # overwritten
+    skip_pin_to_remote <- T
+    if (!input_i$metadata$id %in% skip_sync) {
+      if (!input_i$metadata$synced | rewrite_ok) {
+        skip_pin_to_remote <- F
+      }
+    }
 
-    # pin_name_exists <- pins::pin_exists(board = inputboard_alias, name = input_i$metadata$name)
-    #
-    # if (pin_name_exists) {
-    #   synced_versions <- pins::pin_versions(
-    #     name = input_i$metadata$name,
-    #     board = inputboard_alias
-    #   )$version
-    #
-    #   input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
-    # } else {
-    #   input_i$metadata$synced <- F
-    # }
-    #
-    # skip_pin_to_remote <- T
-    # if (!input_i$metadata$id %in% skip_sync) {
-    #   if (!input_i$metadata$synced | rewrite_ok) {
-    #     skip_pin_to_remote <- F
-    #   }
-    # }
-    #
-    # if (verbose & skip_pin_to_remote) {
-    #   cli::cli_alert_info(glue::glue(
-    #     "Input {input_i$metadata$name}",
-    #     ", version {input_i$metadata$pin_version}",
-    #     " is already synced or chosen to be skipped"
-    #   ))
-    # }
+    if (verbose & skip_pin_to_remote) {
+      cli::cli_alert_info(glue::glue(
+        "Input {input_i$metadata$name}",
+        ", version {input_i$metadata$pin_version}",
+        " is already synced or chosen to be skipped"
+      ))
+    }
 
-    skip_pin_to_remote <- F
+    # skip_pin_to_remote <- F
     if (!skip_pin_to_remote) {
       tmp_pind <- try(pins::pin_write(
         x = input_i$data,
         name = input_i$metadata$name,
-        board = inputboard_alias,
+        board = board_object,
         description = input_i$metadata$description
       ))
 
@@ -267,14 +233,10 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
 
       get_remote_pin_version <- pins::pin_versions(
         name = input_i$metadata$name,
-        board = inputboard_alias
+        board = board_object
       )$hash
 
       input_i$metadata$description <- to_description(input_i = input_i)
-
-      print(class(get_remote_pin_version))
-      print(get_remote_pin_version)
-      print(sort(get_remote_pin_version, decreasing = T))
 
       if (length(get_remote_pin_version) > 1) {
         latest_pin_version  <- sort(get_remote_pin_version)[length(get_remote_pin_version)]

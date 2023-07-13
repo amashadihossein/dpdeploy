@@ -222,46 +222,6 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
   return(TRUE)
 }
 
-
-#' #' @title Get Pins Version Pre Deploy
-#' #' @description  This get the pins version pre-deploy
-#' #' @param d data object
-#' #' @param pin_name what the pin will be named. For data products, it is encoded
-#' #' in dp_param
-#' #' @param pin_description what the pin description will be. For data products,
-#' #' it is encoded in dp_params
-#' #' @return a character version
-#' #' @importFrom dplyr .data
-#' #' @keywords internal
-#' get_pin_version <- function(d, pin_name, pin_description) {
-#'   pin_name <- as.character(pin_name)
-#'   pin_description <- as.character(pin_description)
-#'
-#'   local_board_folder <- pins::board_folder(path = "daap_internal", versioned = T)
-#'
-#'   pin_name_exists <- pins::pin_exists(board = local_board_folder, name = pin_name)
-#'
-#'   if (pin_name_exists) {
-#'     pins::pin_delete(names = pin_name, board = local_board_folder)
-#'   }
-#'
-#'   pins::pin_write(
-#'     x = d,
-#'     name = pin_name,
-#'     board = local_board_folder,
-#'     description = pin_description
-#'   )
-#'
-#'   pin_version <- pins::pin_versions(
-#'     name = pin_name,
-#'     board = local_board_folder
-#'   ) %>% dplyr::pull(.data$version)
-#'
-#'   pins::pin_delete(names = pin_name, board = local_board_folder)
-#'   return(pin_version)
-#' }
-
-
 #' @title Get dlog
 #' @description Reads and format daap_log.yml pasting values in key:value
 #' pairs at depth 2 with delimitter " > "
