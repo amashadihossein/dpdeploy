@@ -268,7 +268,7 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
       get_remote_pin_version <- pins::pin_versions(
         name = input_i$metadata$name,
         board = inputboard_alias
-      )$version
+      )$hash
 
       input_i$metadata$description <- to_description(input_i = input_i)
 
