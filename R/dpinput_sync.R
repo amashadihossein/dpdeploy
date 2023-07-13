@@ -199,30 +199,30 @@ sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
                          verbose) {
   synced_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
 
-    synced_versions <- pins::pin_versions(
-      name = input_i$metadata$name,
-      board = board_object
-    )$hash
-
-    input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
-
-    skip_pin_to_remote <- T
-    if (!input_i$metadata$id %in% skip_sync) {
-      if (!input_i$metadata$synced | rewrite_ok) {
-        skip_pin_to_remote <- F
-      }
-    }
-
-    if (verbose & skip_pin_to_remote) {
-      cli::cli_alert_info(glue::glue(
-        "Input {input_i$metadata$name}",
-        ", version {input_i$metadata$pin_version}",
-        " is already synced or chosen to be skipped"
-      ))
-    }
+    # synced_versions <- pins::pin_versions(
+    #   name = input_i$metadata$name,
+    #   board = board_object
+    # )$hash
+    #
+    # input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
+    #
+    # skip_pin_to_remote <- T
+    # if (!input_i$metadata$id %in% skip_sync) {
+    #   if (!input_i$metadata$synced | rewrite_ok) {
+    #     skip_pin_to_remote <- F
+    #   }
+    # }
+    #
+    # if (verbose & skip_pin_to_remote) {
+    #   cli::cli_alert_info(glue::glue(
+    #     "Input {input_i$metadata$name}",
+    #     ", version {input_i$metadata$pin_version}",
+    #     " is already synced or chosen to be skipped"
+    #   ))
+    # }
 
     # skip_pin_to_remote <- F
-    if (!skip_pin_to_remote) {
+    # if (!skip_pin_to_remote) {
       tmp_pind <- try(pins::pin_write(
         x = input_i$data,
         name = input_i$metadata$name,
@@ -261,7 +261,7 @@ sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
           " {sync_attempt_state}"
         ))
       }
-    }
+    # }
     input_i
   })
 
