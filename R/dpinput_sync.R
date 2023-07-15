@@ -218,7 +218,10 @@ sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
       get_remote_pin_version <- pins::pin_versions(
         name = input_i$metadata$name,
         board = board_object
-      )$hash
+        ) %>%
+        dplyr::arrange(dplyr::desc(version)) %>%
+        dplyr::filter(dplyr::row_number()==1) %>%
+        dplyr::pull(hash)
 
       input_i$metadata$description <- to_description(input_i = input_i)
 
