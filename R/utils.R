@@ -82,10 +82,6 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
     x = board_object$prefix,
     split = "/")))[1] == "daap"
 
-  # board_info <- dpconnect_check(board_params = conf$board_params)
-  # in_daap_dir <- isTRUE(board_info$subpath == "daap") |
-  #   isTRUE("daap" %in% basename(board_info$cache))
-
   if (!in_daap_dir) {
     stop(cli::format_error(glue::glue(
       "dpboard is not pointing to daap ",
@@ -234,24 +230,4 @@ get_dlog <- function(project_path) {
     .f = function(x) paste0(x, collapse = " > ")
   )
   return(dlog)
-}
-
-
-#' @title  Check dpconnect executed
-#' @description This checks state whether dpconnect is already executed
-#' @param board_params board_params (only the alias needed)
-#' @keywords internal
-dpconnect_check <- function(board_params) {
-  board_info <- try(pins::board_get(name = board_params$board_alias), silent = T)
-  if ("try-error" %in% class(board_info)) {
-    stop(cli::format_error(glue::glue(
-      "You are not currently connected to ",
-      "{board_params$board_alias}. Use ",
-      "dp_connect to connect first!"
-    )))
-  }
-
-  # TODO: this function is almost identical to that found in dpi/util except
-  # here there is an invisible return. Harmonize and re-use
-  invisible(board_info)
 }
