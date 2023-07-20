@@ -38,6 +38,19 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
     return(input_map$input_obj)
   }
 
+  input_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
+    if (!input_i$metadata$id %in% skip_sync) {
+      input_i$metadata$description <- to_description(input_i = input_i)
+      input_i$metadata$pin_version <-
+        get_pin_version(
+          d = input_i$data,
+          pin_name = input_i$metadata$name,
+          pin_description = input_i$metadata$description
+        )
+    }
+    input_i
+  })
+
   board <- init_board(conf = conf)
 
   synced_map <- sync_iterate(
@@ -199,6 +212,30 @@ sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
                          verbose) {
   synced_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
 
+    synced_versions <- pins::pin_versions(
+      name = input_i$metadata$name,
+      board = board_object
+    ) %>%
+      dplyr::pull(hash)
+
+    input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
+
+    skip_pin_to_remote <- T
+    if (!input_i$metadata$id %in% skip_sync) {
+      if (!input_i$metadata$synced | rewrite_ok) {
+        skip_pin_to_remote <- F
+      }
+    }
+
+    if (verbose & skip_pin_to_remote) {
+      cli::cli_alert_info(glue::glue(
+        "Input {input_i$metadata$name}",
+        ", version {input_i$metadata$pin_version}",
+        " is already synced or chosen to be skipped"
+      ))
+    }
+
+    if (!skip_pin_to_remote) {
       tmp_pind <- try(pins::pin_write(
         x = input_i$data,
         name = input_i$metadata$name,
@@ -215,23 +252,23 @@ sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
         sync_alrt <- cli::cli_alert_warning
       }
 
-      get_remote_pin_version <- pins::pin_versions(
-        name = input_i$metadata$name,
-        board = board_object
-        ) %>%
-        dplyr::arrange(dplyr::desc(version)) %>%
-        dplyr::filter(dplyr::row_number()==1) %>%
-        dplyr::pull(hash)
-
-      input_i$metadata$description <- to_description(input_i = input_i)
-
-      if (length(get_remote_pin_version) > 1) {
-        latest_pin_version  <- sort(get_remote_pin_version)[length(get_remote_pin_version)]
-      } else {
-        latest_pin_version <- get_remote_pin_version
-      }
-
-      input_i$metadata$pin_version  <- latest_pin_version
+      # get_remote_pin_version <- pins::pin_versions(
+      #   name = input_i$metadata$name,
+      #   board = board_object
+      #   ) %>%
+      #   dplyr::arrange(dplyr::desc(version)) %>%
+      #   dplyr::filter(dplyr::row_number()==1) %>%
+      #   dplyr::pull(hash)
+      #
+      # input_i$metadata$description <- to_description(input_i = input_i)
+      #
+      # if (length(get_remote_pin_version) > 1) {
+      #   latest_pin_version  <- sort(get_remote_pin_version)[length(get_remote_pin_version)]
+      # } else {
+      #   latest_pin_version <- get_remote_pin_version
+      # }
+      #
+      # input_i$metadata$pin_version  <- latest_pin_version
 
       if (verbose) {
         sync_alrt(glue::glue(
@@ -240,6 +277,7 @@ sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
           " {sync_attempt_state}"
         ))
       }
+    }
     input_i
   })
 
