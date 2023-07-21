@@ -119,7 +119,7 @@ init_board.s3_board <- function(conf) {
   }
 
   input_params <- list(
-    board_alias = conf$board_params$board_alias,
+    # board_alias = conf$board_params$board_alias,
     bucket_name = conf$board_params$bucket_name,
     region = conf$board_params$region,
     aws_key = aws_creds$key,
