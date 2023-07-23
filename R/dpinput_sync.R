@@ -209,7 +209,7 @@ pathnames_reroot <- function(pathnames, new_root = "input_files") {
 #' @keywords internal
 sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
                          verbose) {
-  synced_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
+  synced_map <- purrr::map(.x = input_map, .f = function(input_i) {
 
     synced_versions <- pins::pin_versions(
       name = input_i$metadata$name,
