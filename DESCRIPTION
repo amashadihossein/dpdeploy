@@ -13,6 +13,7 @@ Imports:
     aws.signature,
     cli,
     dpbuild,
+    dpi,
     dplyr,
     ellipsis,
     fs,
