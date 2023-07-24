@@ -211,13 +211,19 @@ sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
                          verbose) {
   synced_map <- purrr::map(.x = input_map, .f = function(input_i) {
 
-    synced_versions <- pins::pin_versions(
+    pin_name_exists <- pins::pin_exists(board = board_object, name = input_i$metadata$name)
+
+    if (pin_name_exists) {
+      synced_versions <- pins::pin_versions(
       name = input_i$metadata$name,
       board = board_object
     ) %>%
       dplyr::pull(hash)
 
     input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
+    } else {
+      input_i$metadata$synced <- F
+    }
 
     skip_pin_to_remote <- T
     if (!input_i$metadata$id %in% skip_sync) {
