@@ -19,6 +19,5 @@ dpinput_sync(conf, input_map, verbose = F, ...)
 synced_map this is input_map with sync status added to metadata
 }
 \description{
-Sync input data for a data product build to a remote like a
-labkey or AWS S3
+Sync input data for a data product build to a remote such as AWS S3
 }

@@ -45,46 +45,6 @@ dp_deployCore <- function(conf, project_path, d, dlog, git_info, ...) {
 
 
 #' @keywords internal
-dp_deployCore.labkey_board <- function(conf, project_path, d, dlog, git_info,
-                                       verbose = F, ...) {
-  if (verbose) {
-    print(glue::glue("Deploying to Labkey remote"))
-  }
-
-  # define board and pin dp to labkey
-  pins::board_register(
-    board = "labkey",
-    name = conf$board_params$board_alias,
-    api_key = conf$creds$api_key,
-    base_url = conf$board_params$url,
-    folder = conf$board_params$folder,
-    path = "daap",
-    versions = T
-  )
-
-  # This is force data.txt sync prior to pinning to address pins bug where
-  # versions can be lost
-  ver_current <- pins::pin_versions(
-    name = as.character(attr(d, "dp_name")),
-    board = conf$board_params$board_alias
-  )
-
-  pins::pin_write(
-    x = d,
-    name = attr(d, "dp_name"),
-    board = conf$board_params$board_alias,
-    description = attr(d, "branch_description")
-  )
-
-
-  # Update dpboard_log
-  dpboardlog_update(conf = conf, dlog = dlog, git_info = git_info)
-
-  return(TRUE)
-}
-
-
-#' @keywords internal
 dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
                                    verbose = F, ...) {
   if (verbose) {
@@ -146,7 +106,7 @@ dp_deployCore.local_board <- function(conf, project_path, d, dlog, git_info,
   }
 
 
-  # define board and pin dp to labkey
+  # define board and pin dp to local board
   pins::board_register(
     board = "local",
     name = conf$board_params$board_alias,

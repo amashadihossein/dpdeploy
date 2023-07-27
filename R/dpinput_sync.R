@@ -1,6 +1,5 @@
 #' @title Sync Input Data to Remote
-#' @description Sync input data for a data product build to a remote like a
-#' labkey or AWS S3
+#' @description Sync input data for a data product build to a remote such as AWS S3
 #' @param conf environment containing all config.R variables. See `dpconf_get()`
 #' @param input_map object containing all input data to be synced. See `map_input()`
 #' @param verbose T/F
@@ -84,21 +83,6 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
 #' @keywords internal
 init_board <- function(conf) {
   UseMethod(generic = "init_board", object = conf)
-}
-
-#' @keywords internal
-init_board.labkey_board <- function(conf) {
-  input_params <- conf$board_params
-  input_params$api_key <- conf$creds$api_key
-  pins::board_register(
-    board = "labkey",
-    name = get_inputboard_alias(conf),
-    api_key = input_params$api_key,
-    base_url = input_params$url,
-    folder = input_params$folder,
-    path = "dpinput",
-    versions = TRUE
-  )
 }
 
 #' @keywords internal
