@@ -78,9 +78,16 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
     board_subdir = file.path("daap/")
   )
 
-  in_daap_dir <- rev(unlist(strsplit(
-    x = board_object$prefix,
-    split = "/")))[1] == "daap"
+  if (board_object$board == "pins_board_folder") {
+    in_daap_dir <- rev(unlist(strsplit(
+      x = board_object$path,
+      split = "_|-|/"
+    )))[1] == "daap"
+  } else {
+    in_daap_dir <- rev(unlist(strsplit(
+      x = board_object$prefix,
+      split = "/")))[1] == "daap"
+  }
 
   if (!in_daap_dir) {
     stop(cli::format_error(glue::glue(

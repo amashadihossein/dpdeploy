@@ -121,20 +121,15 @@ init_board.s3_board <- function(conf) {
 
 #' @keywords internal
 init_board.local_board <- function(conf) {
-  input_params <- conf$board_params
-  pins::board_register(
-    board = "local",
-    name = get_inputboard_alias(conf),
-    cache = file.path(conf$board_params$folder, "dpinput"),
-    versions = TRUE
-  )
+  pins::board_folder(path = file.path(conf$board_params$folder, "dpinput"),
+                     versioned = T)
 }
 
-#' @keywords internal
-get_inputboard_alias <- function(conf) {
-  inputboard_alias <- paste0(conf$board_params$board_alias, "_dpinput")
-  return(inputboard_alias)
-}
+# #' @keywords internal
+# get_inputboard_alias <- function(conf) {
+#   inputboard_alias <- paste0(conf$board_params$board_alias, "_dpinput")
+#   return(inputboard_alias)
+# }
 
 #' @keywords internal
 to_description <- function(input_i) {

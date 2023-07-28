@@ -107,24 +107,20 @@ dp_deployCore.local_board <- function(conf, project_path, d, dlog, git_info,
 
 
   # define board and pin dp to local board
-  pins::board_register(
-    board = "local",
-    name = conf$board_params$board_alias,
-    cache = file.path(conf$board_params$folder, "daap"),
-    versions = T
-  )
+  board_object <- pins::board_folder(path = file.path(conf$board_params$folder, "daap"),
+                                     versioned = T)
 
   # This is force data.txt sync prior to pinning to address pins bug where
   # versions can be lost. not sure necessary for local board but not harmful
-  ver_current <- pins::pin_versions(
-    name = as.character(attr(d, "dp_name")),
-    board = conf$board_params$board_alias
-  )
+  # ver_current <- pins::pin_versions(
+  #   name = as.character(attr(d, "dp_name")),
+  #   board = conf$board_params$board_alias
+  # )
 
   pins::pin_write(
     x = d,
     name = attr(d, "dp_name"),
-    board = conf$board_params$board_alias,
+    board = board_object,
     description = attr(d, "branch_description")
   )
 
