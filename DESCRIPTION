@@ -12,8 +12,8 @@ Imports:
     aws.s3,
     aws.signature,
     cli,
-    dpbuild,
-    dpi,
+    dpbuild (>= 0.1.0),
+    dpi (>= 0.1.0),
     dplyr,
     ellipsis,
     fs,
@@ -29,8 +29,6 @@ Imports:
 Suggests: 
     covr,
     roxygen2
-Remotes: 
-    amashadihossein/dpbuild
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
