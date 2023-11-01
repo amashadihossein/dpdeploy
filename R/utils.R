@@ -72,9 +72,22 @@ gitinfo_validate <- function(project_path, verbose = F) {
 dpboardlog_update <- function(conf, git_info, dlog = NULL,
                               dp_name = character(0),
                               pin_version = character(0)) {
-  board_info <- dpconnect_check(board_params = conf$board_params)
-  in_daap_dir <- isTRUE(board_info$subpath == "daap") |
-    isTRUE("daap" %in% basename(board_info$cache))
+
+  board_object <-  dpi::dp_connect(
+    board_params = conf$board_params, creds = conf$creds,
+    board_subdir = file.path("daap/")
+  )
+
+  if (board_object$board == "pins_board_folder") {
+    in_daap_dir <- rev(unlist(strsplit(
+      x = board_object$path,
+      split = "_|-|/"
+    )))[1] == "daap"
+  } else {
+    in_daap_dir <- rev(unlist(strsplit(
+      x = board_object$prefix,
+      split = "/")))[1] == "daap"
+  }
 
   if (!in_daap_dir) {
     stop(cli::format_error(glue::glue(
@@ -85,10 +98,10 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
 
   dpboard_log <- tryCatch(
     expr = {
-      pins::pin_get(
+      pins::pin_read(
         name = "dpboard-log",
-        board = conf$board_params$board_alias,
-        files = F, cache = board_info$board == "local"
+        board = board_object #,
+        # files = F, cache = board_info$board == "local"
       )
     },
     error = function(er) {
@@ -147,15 +160,15 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
 
     # This is force data.txt sync prior to pinning to address pins bug where
     # versions can be lost
-    ver_current <- pins::pin_versions(
-      name = "dpboard-log",
-      board = conf$board_params$board_alias
-    )
+    # ver_current <- pins::pin_versions(
+    #   name = "dpboard-log",
+    #   board = conf$board_params$board_alias
+    # )
 
-    pins::pin(
+    pins::pin_write(
       x = dpboard_log,
       name = "dpboard-log",
-      board = conf$board_params$board_alias,
+      board = board_object,
       description = "Data Product Log"
     )
 
@@ -197,56 +210,20 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
 
   # This is force data.txt sync prior to pinning to address pins bug where
   # versions can be lost
-  ver_current <- pins::pin_versions(
-    name = "dpboard-log",
-    board = conf$board_params$board_alias
-  )
-  pins::pin(
+  # ver_current <- pins::pin_versions(
+  #   name = "dpboard-log",
+  #   board = conf$board_params$board_alias
+  # )
+
+  pins::pin_write(
     x = dpboard_log,
     name = "dpboard-log",
-    board = conf$board_params$board_alias,
+    board = board_object,
     description = "Data Product Log"
   )
 
   return(TRUE)
 }
-
-
-#' @title Get Pins Version Pre Deploy
-#' @description  This get the pins version pre-deploy
-#' @param d data object
-#' @param pin_name what the pin will be named. For data products, it is encoded
-#' in dp_param
-#' @param pin_description what the pin description will be. For data products,
-#' it is encoded in dp_params
-#' @return a character version
-#' @importFrom dplyr .data
-#' @keywords internal
-get_pin_version <- function(d, pin_name, pin_description) {
-  pin_name <- as.character(pin_name)
-  pin_description <- as.character(pin_description)
-
-  pins::board_register_local(name = "daap_internal", version = T)
-
-
-  pins::pin_remove(name = pin_name, board = "daap_internal")
-  pins::pin(
-    x = d,
-    name = pin_name,
-    board = "daap_internal",
-    description = pin_description
-  )
-
-  pin_version <- pins::pin_versions(
-    name = pin_name,
-    board = "daap_internal",
-    full = F
-  ) %>% dplyr::pull(.data$version)
-  pins::pin_remove(name = pin_name, board = "daap_internal")
-
-  return(pin_version)
-}
-
 
 #' @title Get dlog
 #' @description Reads and format daap_log.yml pasting values in key:value
@@ -263,21 +240,40 @@ get_dlog <- function(project_path) {
 }
 
 
-#' @title  Check dpconnect executed
-#' @description This checks state whether dpconnect is already executed
-#' @param board_params board_params (only the alias needed)
+#' @title Get Pins Version Pre Deploy
+#' @description  This get the pins version pre-deploy
+#' @param d data object
+#' @param pin_name what the pin will be named. For data products, it is encoded in dp_param
+#' @param pin_description what the pin description will be. For data products, it is encoded in dp_params
+#' @return a character version
+#' @importFrom dplyr .data
 #' @keywords internal
-dpconnect_check <- function(board_params) {
-  board_info <- try(pins::board_get(name = board_params$board_alias), silent = T)
-  if ("try-error" %in% class(board_info)) {
-    stop(cli::format_error(glue::glue(
-      "You are not currently connected to ",
-      "{board_params$board_alias}. Use ",
-      "dp_connect to connect first!"
-    )))
+get_pin_version <- function(d, pin_name, pin_description) {
+  withr::local_options(list(pins.quiet = TRUE))
+  pin_name <- as.character(pin_name)
+  pin_description <- as.character(pin_description)
+
+  # local_board_folder <- pins::board_folder(path = "daap_internal", versioned = T)
+  temp_board_folder <- pins::board_temp(versioned = T)
+
+  pin_name_exists <- pins::pin_exists(board = temp_board_folder, name = pin_name)
+
+  if (pin_name_exists) {
+    pins::pin_delete(names = pin_name, board = temp_board_folder)
   }
 
-  # TODO: this function is almost identical to that found in dpi/util except
-  # here there is an invisible return. Harmonize and re-use
-  invisible(board_info)
+  pins::pin_write(
+    x = d,
+    name = pin_name,
+    board = temp_board_folder,
+    description = pin_description
+  )
+
+  pin_version <- pins::pin_versions(
+    name = pin_name,
+    board = temp_board_folder
+  ) %>% dplyr::pull(.data$hash)
+  pins::pin_delete(names = pin_name, board = temp_board_folder)
+
+  return(pin_version)
 }

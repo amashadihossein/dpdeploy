@@ -1,6 +1,6 @@
 Package: dpdeploy
 Title: A package to manage deployment of data products
-Version: 0.0.0.9016
+Version: 0.1.0
 Authors@R: c(
     person("Afshin", "Mashadi-Hossein", , "amashadihossein@gmail.com", role = c("aut", "cre")),
     person("Yue", "Jiang", , "rivehill@gmail.com", role = "aut")
@@ -12,7 +12,8 @@ Imports:
     aws.s3,
     aws.signature,
     cli,
-    dpbuild,
+    dpbuild (>= 0.1.0),
+    dpi (>= 0.1.0),
     dplyr,
     ellipsis,
     fs,
@@ -20,18 +21,14 @@ Imports:
     glue,
     lifecycle,
     magrittr,
-    pins (== 0.4.5.9001),
+    pins (>= 1.2.0),
     purrr,
-    Rlabkey,
     rlang (>= 0.4.11),
     withr,
     yaml
 Suggests: 
     covr,
     roxygen2
-Remotes: 
-    amashadihossein/dpbuild,
-    amashadihossein/pins
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

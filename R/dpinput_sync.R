@@ -1,6 +1,5 @@
 #' @title Sync Input Data to Remote
-#' @description Sync input data for a data product build to a remote like a
-#' labkey or AWS S3
+#' @description Sync input data for a data product build to a remote such as AWS S3
 #' @param conf environment containing all config.R variables. See `dpconf_get()`
 #' @param input_map object containing all input data to be synced. See `map_input()`
 #' @param verbose T/F
@@ -38,7 +37,6 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
     return(input_map$input_obj)
   }
 
-  # Add pin version and description
   input_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i) {
     if (!input_i$metadata$id %in% skip_sync) {
       input_i$metadata$description <- to_description(input_i = input_i)
@@ -52,12 +50,11 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
     input_i
   })
 
-
-  init_board(conf = conf)
+  board <- init_board(conf = conf)
 
   synced_map <- sync_iterate(
     input_map = input_map,
-    inputboard_alias = get_inputboard_alias(conf),
+    board_object = board, #get_inputboard_alias(conf),
     skip_sync = skip_sync,
     rewrite_ok = rewrite_ok,
     verbose = verbose
@@ -73,7 +70,6 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
     }
   ) %>% unlist()
 
-
   sync_fails <- to_be_synced[!was_synced]
 
   if ((n_failed <- length(sync_fails)) > 0) {
@@ -87,21 +83,6 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
 #' @keywords internal
 init_board <- function(conf) {
   UseMethod(generic = "init_board", object = conf)
-}
-
-#' @keywords internal
-init_board.labkey_board <- function(conf) {
-  input_params <- conf$board_params
-  input_params$api_key <- conf$creds$api_key
-  pins::board_register(
-    board = "labkey",
-    name = get_inputboard_alias(conf),
-    api_key = input_params$api_key,
-    base_url = input_params$url,
-    folder = input_params$folder,
-    path = "dpinput",
-    versions = TRUE
-  )
 }
 
 #' @keywords internal
@@ -122,40 +103,33 @@ init_board.s3_board <- function(conf) {
   }
 
   input_params <- list(
-    board_alias = conf$board_params$board_alias,
     bucket_name = conf$board_params$bucket_name,
     region = conf$board_params$region,
     aws_key = aws_creds$key,
     aws_secret = aws_creds$secret
   )
 
-  pins::board_register_s3(
-    name = get_inputboard_alias(conf),
+  pins::board_s3(
+    prefix = "dpinput/",
     bucket = input_params$bucket_name,
-    key = input_params$aws_key,
-    secret = input_params$aws_secret,
-    path = "dpinput",
     region = input_params$region,
-    versions = TRUE
+    access_key = input_params$aws_key,
+    secret_access_key = input_params$aws_secret,
+    versioned = TRUE
   )
 }
 
 #' @keywords internal
 init_board.local_board <- function(conf) {
-  input_params <- conf$board_params
-  pins::board_register(
-    board = "local",
-    name = get_inputboard_alias(conf),
-    cache = file.path(conf$board_params$folder, "dpinput"),
-    versions = TRUE
-  )
+  pins::board_folder(path = file.path(conf$board_params$folder, "dpinput"),
+                     versioned = T)
 }
 
-#' @keywords internal
-get_inputboard_alias <- function(conf) {
-  inputboard_alias <- paste0(conf$board_params$board_alias, "_dpinput")
-  return(inputboard_alias)
-}
+# #' @keywords internal
+# get_inputboard_alias <- function(conf) {
+#   inputboard_alias <- paste0(conf$board_params$board_alias, "_dpinput")
+#   return(inputboard_alias)
+# }
 
 #' @keywords internal
 to_description <- function(input_i) {
@@ -212,18 +186,23 @@ pathnames_reroot <- function(pathnames, new_root = "input_files") {
 }
 
 #' @keywords internal
-sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
+sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
                          verbose) {
   synced_map <- purrr::map(.x = input_map, .f = function(input_i) {
-    # This version coincidentally also addresses pins bug where data.txt can be
-    # overwritten
-    synced_versions <- pins::pin_versions(
+
+    pin_name_exists <- pins::pin_exists(board = board_object, name = input_i$metadata$name)
+
+    if (pin_name_exists) {
+      synced_versions <- pins::pin_versions(
       name = input_i$metadata$name,
-      board = inputboard_alias
-    )$version
+      board = board_object
+    ) %>%
+      dplyr::pull(hash)
 
     input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
-
+    } else {
+      input_i$metadata$synced <- F
+    }
 
     skip_pin_to_remote <- T
     if (!input_i$metadata$id %in% skip_sync) {
@@ -240,12 +219,11 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
       ))
     }
 
-
     if (!skip_pin_to_remote) {
-      tmp_pind <- try(pins::pin(
+      tmp_pind <- try(pins::pin_write(
         x = input_i$data,
         name = input_i$metadata$name,
-        board = inputboard_alias,
+        board = board_object,
         description = input_i$metadata$description
       ))
 
@@ -258,6 +236,24 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
         sync_alrt <- cli::cli_alert_warning
       }
 
+      # get_remote_pin_version <- pins::pin_versions(
+      #   name = input_i$metadata$name,
+      #   board = board_object
+      #   ) %>%
+      #   dplyr::arrange(dplyr::desc(version)) %>%
+      #   dplyr::filter(dplyr::row_number()==1) %>%
+      #   dplyr::pull(hash)
+      #
+      # input_i$metadata$description <- to_description(input_i = input_i)
+      #
+      # if (length(get_remote_pin_version) > 1) {
+      #   latest_pin_version  <- sort(get_remote_pin_version)[length(get_remote_pin_version)]
+      # } else {
+      #   latest_pin_version <- get_remote_pin_version
+      # }
+      #
+      # input_i$metadata$pin_version  <- latest_pin_version
+
       if (verbose) {
         sync_alrt(glue::glue(
           "Input {input_i$metadata$name}, version ",
@@ -266,7 +262,6 @@ sync_iterate <- function(input_map, inputboard_alias, skip_sync, rewrite_ok = F,
         ))
       }
     }
-
     input_i
   })
 
