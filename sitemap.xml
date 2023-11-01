@@ -22,6 +22,9 @@
     <loc>https://amashadihossein.github.io/dpdeploy/index.html</loc>
   </url>
   <url>
+    <loc>https://amashadihossein.github.io/dpdeploy/news/index.html</loc>
+  </url>
+  <url>
     <loc>https://amashadihossein.github.io/dpdeploy/reference/dp_deploy.html</loc>
   </url>
   <url>
@@ -32,9 +35,6 @@
   </url>
   <url>
     <loc>https://amashadihossein.github.io/dpdeploy/reference/dpconf_get.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/dpconnect_check.html</loc>
   </url>
   <url>
     <loc>https://amashadihossein.github.io/dpdeploy/reference/dpdeploy-package.html</loc>
