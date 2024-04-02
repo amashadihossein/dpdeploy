@@ -54,7 +54,7 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
 
   synced_map <- sync_iterate(
     input_map = input_map,
-    board_object = board, #get_inputboard_alias(conf),
+    board_object = board,
     skip_sync = skip_sync,
     rewrite_ok = rewrite_ok,
     verbose = verbose
@@ -102,34 +102,42 @@ init_board.s3_board <- function(conf) {
       aws.signature::locate_credentials(profile = aws_creds$profile_name)$secret
   }
 
-  input_params <- list(
-    bucket_name = conf$board_params$bucket_name,
-    region = conf$board_params$region,
-    aws_key = aws_creds$key,
-    aws_secret = aws_creds$secret
-  )
-
   pins::board_s3(
     prefix = "dpinput/",
-    bucket = input_params$bucket_name,
-    region = input_params$region,
-    access_key = input_params$aws_key,
-    secret_access_key = input_params$aws_secret,
+    bucket = conf$board_params$bucket_name,
+    region = conf$board_params$region,
+    access_key = aws_creds$key,
+    secret_access_key = aws_creds$secret,
     versioned = TRUE
   )
 }
 
 #' @keywords internal
-init_board.local_board <- function(conf) {
-  pins::board_folder(path = file.path(conf$board_params$folder, "dpinput"),
-                     versioned = T)
+init_board.labkey_board <- function(conf) {
+  # define board and pin dp to LabKey
+  labkey_creds <- conf$creds
+  if (labkey_creds$api_key == "") {
+    stop("Please check LabKey credentials. You need to provide api_key")
+  }
+
+  pinsLabkey::board_labkey(
+    board_alias = conf$board_params$board_alias,
+    api_key = labkey_creds$api_key,
+    base_url = conf$board_params$url,
+    folder = conf$board_params$folder,
+    versioned = T,
+    subdir = "dpinput/"
+  )
 }
 
-# #' @keywords internal
-# get_inputboard_alias <- function(conf) {
-#   inputboard_alias <- paste0(conf$board_params$board_alias, "_dpinput")
-#   return(inputboard_alias)
-# }
+#' @keywords internal
+init_board.local_board <- function(conf) {
+  pins::board_folder(
+    path = file.path(conf$board_params$folder, "dpinput"),
+    versioned = T
+  )
+}
+
 
 #' @keywords internal
 to_description <- function(input_i) {
@@ -189,17 +197,28 @@ pathnames_reroot <- function(pathnames, new_root = "input_files") {
 sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
                          verbose) {
   synced_map <- purrr::map(.x = input_map, .f = function(input_i) {
-
-    pin_name_exists <- pins::pin_exists(board = board_object, name = input_i$metadata$name)
+    if (board_object$board == "pins_board_labkey") {
+      pin_name_exists <- pinsLabkey::pin_exists(board = board_object, name = input_i$metadata$name)
+    } else {
+      pin_name_exists <- pins::pin_exists(board = board_object, name = input_i$metadata$name)
+    }
 
     if (pin_name_exists) {
-      synced_versions <- pins::pin_versions(
-      name = input_i$metadata$name,
-      board = board_object
-    ) %>%
-      dplyr::pull(hash)
+      if (board_object$board == "pins_board_labkey") {
+        synced_versions <- pinsLabkey::pin_versions(
+          name = input_i$metadata$name,
+          board = board_object
+        ) %>%
+          dplyr::pull(hash)
+      } else {
+        synced_versions <- pins::pin_versions(
+          name = input_i$metadata$name,
+          board = board_object
+        ) %>%
+          dplyr::pull(hash)
+      }
 
-    input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
+      input_i$metadata$synced <- input_i$metadata$pin_version %in% synced_versions
     } else {
       input_i$metadata$synced <- F
     }
@@ -220,12 +239,21 @@ sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
     }
 
     if (!skip_pin_to_remote) {
-      tmp_pind <- try(pins::pin_write(
-        x = input_i$data,
-        name = input_i$metadata$name,
-        board = board_object,
-        description = input_i$metadata$description
-      ))
+      if (board_object$board == "pins_board_labkey") {
+        tmp_pind <- try(pinsLabkey::pin_write(
+          x = input_i$data,
+          name = input_i$metadata$name,
+          board = board_object,
+          description = input_i$metadata$description
+        ))
+      } else {
+        tmp_pind <- try(pins::pin_write(
+          x = input_i$data,
+          name = input_i$metadata$name,
+          board = board_object,
+          description = input_i$metadata$description
+        ))
+      }
 
       input_i$metadata$synced <- TRUE
       sync_attempt_state <- "completed"
@@ -235,24 +263,6 @@ sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
         sync_attempt_state <- "failed"
         sync_alrt <- cli::cli_alert_warning
       }
-
-      # get_remote_pin_version <- pins::pin_versions(
-      #   name = input_i$metadata$name,
-      #   board = board_object
-      #   ) %>%
-      #   dplyr::arrange(dplyr::desc(version)) %>%
-      #   dplyr::filter(dplyr::row_number()==1) %>%
-      #   dplyr::pull(hash)
-      #
-      # input_i$metadata$description <- to_description(input_i = input_i)
-      #
-      # if (length(get_remote_pin_version) > 1) {
-      #   latest_pin_version  <- sort(get_remote_pin_version)[length(get_remote_pin_version)]
-      # } else {
-      #   latest_pin_version <- get_remote_pin_version
-      # }
-      #
-      # input_i$metadata$pin_version  <- latest_pin_version
 
       if (verbose) {
         sync_alrt(glue::glue(
