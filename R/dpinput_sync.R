@@ -198,7 +198,8 @@ sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
                          verbose) {
   synced_map <- purrr::map(.x = input_map, .f = function(input_i) {
     if (board_object$board == "pins_board_labkey") {
-      pin_name_exists <- pinsLabkey::pin_exists(board = board_object, name = input_i$metadata$name)
+      pin_names <- pinsLabkey::pin_list(board = board_object)
+      pin_name_exists <- input_i$metadata$name %in% pin_names
     } else {
       pin_name_exists <- pins::pin_exists(board = board_object, name = input_i$metadata$name)
     }
