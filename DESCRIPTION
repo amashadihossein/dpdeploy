@@ -1,9 +1,9 @@
 Package: dpdeploy
 Title: A package to manage deployment of data products
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
-    person("Afshin", "Mashadi-Hossein", , "amashadihossein@gmail.com", role = c("aut", "cre")),
-    person("Yue", "Jiang", , "rivehill@gmail.com", role = "aut")
+    person(given = "Afshin", family = "Mashadi-Hossein", email ="amashadihossein@gmail.com", role = c("aut", "cre")),
+    person(given = "Yue", family = "Jiang", email = "rivehill@gmail.com", role = "aut")
   )
 Description: An R package to manage deployment of data product to remote.
 License: GPL-3
@@ -22,6 +22,7 @@ Imports:
     lifecycle,
     magrittr,
     pins (>= 1.2.0),
+    pinsLabkey,
     purrr,
     rlang (>= 0.4.11),
     withr,
@@ -33,3 +34,5 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Remotes: 
+    github::camorosi/pinsLabkey

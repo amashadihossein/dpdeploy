@@ -72,8 +72,7 @@ gitinfo_validate <- function(project_path, verbose = F) {
 dpboardlog_update <- function(conf, git_info, dlog = NULL,
                               dp_name = character(0),
                               pin_version = character(0)) {
-
-  board_object <-  dpi::dp_connect(
+  board_object <- dpi::dp_connect(
     board_params = conf$board_params, creds = conf$creds,
     board_subdir = file.path("daap/")
   )
@@ -83,10 +82,16 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
       x = board_object$path,
       split = "_|-|/"
     )))[1] == "daap"
+  } else if (board_object$board == "pins_board_labkey") {
+    in_daap_dir <- rev(unlist(strsplit(
+      x = board_object$subdir,
+      split = "/"
+    )))[1] == "daap"
   } else {
     in_daap_dir <- rev(unlist(strsplit(
       x = board_object$prefix,
-      split = "/")))[1] == "daap"
+      split = "/"
+    )))[1] == "daap"
   }
 
   if (!in_daap_dir) {
@@ -98,20 +103,20 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
 
   dpboard_log <- tryCatch(
     expr = {
-      pins::pin_read(
-        name = "dpboard-log",
-        board = board_object #,
-        # files = F, cache = board_info$board == "local"
-      )
+      if (board_object$board == "pins_board_labkey") {
+        pinsLabkey::pin_read(
+          name = "dpboard-log",
+          board = board_object
+        )
+      } else {
+        pins::pin_read(
+          name = "dpboard-log",
+          board = board_object
+        )
+      }
     },
     error = function(er) {
       msg <- conditionMessage(er)
-      # msg_frmt <- cli::format_message(glue::glue("Failed to find/pull ",
-      #                                            "dpboard-log: {msg}"))
-      # # TODO: this verbose can never be passed. Harmonize how verbose is
-      # # handled across all functions
-      # if(verbose)
-      #   message(msg_frmt)
 
       invisible(structure(msg, class = "try-error"))
     }
@@ -158,19 +163,21 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
     dpboard_log <- dplyr::bind_rows(dpboard_log_tmp, tmp) %>%
       dplyr::distinct()
 
-    # This is force data.txt sync prior to pinning to address pins bug where
-    # versions can be lost
-    # ver_current <- pins::pin_versions(
-    #   name = "dpboard-log",
-    #   board = conf$board_params$board_alias
-    # )
-
-    pins::pin_write(
-      x = dpboard_log,
-      name = "dpboard-log",
-      board = board_object,
-      description = "Data Product Log"
-    )
+    if (board_object$board == "pins_board_labkey") {
+      pinsLabkey::pin_write(
+        x = dpboard_log,
+        name = "dpboard-log",
+        board = board_object,
+        description = "Data Product Log"
+      )
+    } else {
+      pins::pin_write(
+        x = dpboard_log,
+        name = "dpboard-log",
+        board = board_object,
+        description = "Data Product Log"
+      )
+    }
 
     return(TRUE)
   }
@@ -208,19 +215,21 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
   dpboard_log <- dplyr::bind_rows(tmp, daap_log_i) %>%
     dplyr::distinct()
 
-  # This is force data.txt sync prior to pinning to address pins bug where
-  # versions can be lost
-  # ver_current <- pins::pin_versions(
-  #   name = "dpboard-log",
-  #   board = conf$board_params$board_alias
-  # )
-
-  pins::pin_write(
-    x = dpboard_log,
-    name = "dpboard-log",
-    board = board_object,
-    description = "Data Product Log"
-  )
+  if (board_object$board == "pins_board_labkey") {
+    pinsLabkey::pin_write(
+      x = dpboard_log,
+      name = "dpboard-log",
+      board = board_object,
+      description = "Data Product Log"
+    )
+  } else {
+    pins::pin_write(
+      x = dpboard_log,
+      name = "dpboard-log",
+      board = board_object,
+      description = "Data Product Log"
+    )
+  }
 
   return(TRUE)
 }
@@ -253,7 +262,6 @@ get_pin_version <- function(d, pin_name, pin_description) {
   pin_name <- as.character(pin_name)
   pin_description <- as.character(pin_description)
 
-  # local_board_folder <- pins::board_folder(path = "daap_internal", versioned = T)
   temp_board_folder <- pins::board_temp(versioned = T)
 
   pin_name_exists <- pins::pin_exists(board = temp_board_folder, name = pin_name)
