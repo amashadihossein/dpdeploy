@@ -1,3 +1,7 @@
+# dpdeploy 0.2.0
+
+* Add back support for LabKey boards (#29). `pinsLabkey` is now required to work with LabKey boards
+
 # dpdeploy 0.1.0
 
 ## Breaking changes
