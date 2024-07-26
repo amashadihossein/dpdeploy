@@ -1,3 +1,8 @@
+# dpdeploy 0.3.0
+
+* Removed references to `board_alias` (#34) as this argument is now deprecated with `pinsLabkey` v0.2.0
+* Addressed `dp_connect` issue on on windows related to removed of trailing slashes in s3 dirs
+
 # dpdeploy 0.2.0
 
 * Add back support for LabKey boards (#29). `pinsLabkey` is now required to work with LabKey boards
