@@ -104,7 +104,7 @@ dp_deployCore.labkey_board <- function(conf, project_path, d, dlog, git_info,
   }
 
   board <- pinsLabkey::board_labkey(
-    board_alias = conf$board_params$board_alias,
+    cache_alias = conf$board_params$cache_alias,
     api_key = labkey_creds$api_key,
     base_url = conf$board_params$url,
     folder = conf$board_params$folder,

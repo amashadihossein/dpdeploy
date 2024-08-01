@@ -18,8 +18,7 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
   if (verbose) {
     cli::cli_alert_info(glue::glue(
       "Starting sync to the ",
-      "{conf$board_params$board_type} remote: ",
-      "{conf$board_params$board_alias}"
+      "{conf$board_params$board_type} remote"
     ))
   }
 
@@ -121,7 +120,7 @@ init_board.labkey_board <- function(conf) {
   }
 
   pinsLabkey::board_labkey(
-    board_alias = conf$board_params$board_alias,
+    cache_alias = conf$board_params$cache_alias,
     api_key = labkey_creds$api_key,
     base_url = conf$board_params$url,
     folder = conf$board_params$folder,
