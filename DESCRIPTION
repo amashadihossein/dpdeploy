@@ -1,6 +1,6 @@
 Package: dpdeploy
 Title: A package to manage deployment of data products
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: c(
     person(given = "Afshin", family = "Mashadi-Hossein", email ="amashadihossein@gmail.com", role = c("aut", "cre")),
     person(given = "Yue", family = "Jiang", email = "rivehill@gmail.com", role = "aut")
@@ -13,7 +13,7 @@ Imports:
     aws.signature,
     cli,
     dpbuild (>= 0.2.0),
-    dpi (>= 0.2.0),
+    dpi (>= 0.3.0),
     dplyr,
     ellipsis,
     fs,
@@ -22,7 +22,7 @@ Imports:
     lifecycle,
     magrittr,
     pins (>= 1.2.0),
-    pinsLabkey,
+    pinsLabkey (>= 0.2.0),
     purrr,
     rlang (>= 0.4.11),
     withr,
@@ -33,6 +33,6 @@ Suggests:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Remotes: 
     github::camorosi/pinsLabkey

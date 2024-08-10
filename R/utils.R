@@ -74,7 +74,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
                               pin_version = character(0)) {
   board_object <- dpi::dp_connect(
     board_params = conf$board_params, creds = conf$creds,
-    board_subdir = file.path("daap/")
+    board_subdir = "daap/"
   )
 
   if (board_object$board == "pins_board_folder") {
