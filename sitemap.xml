@@ -1,69 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/404.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/SUPPORT.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/index.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/dp_deploy.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/dp_deployCore.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/dpboardlog_update.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/dpconf_get.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/dpdeploy-package.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/dpinput_sync.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/get_dlog.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/get_pin_version.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/gitinfo_validate.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/is_valid_dp_repository.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/pathnames_reroot.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://amashadihossein.github.io/dpdeploy/reference/tidyeval.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://amashadihossein.github.io/dpdeploy/404.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/CONTRIBUTING.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/LICENSE.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/SUPPORT.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/authors.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/index.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/news/index.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/dp_deploy.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/dp_deployCore.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/dpboardlog_update.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/dpconf_get.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/dpdeploy-package.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/dpinput_sync.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/get_dlog.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/get_pin_version.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/gitinfo_validate.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/index.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/is_valid_dp_repository.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/pathnames_reroot.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/pipe.html</loc></url>
+<url><loc>https://amashadihossein.github.io/dpdeploy/reference/tidyeval.html</loc></url>
 </urlset>
+
