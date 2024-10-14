@@ -22,16 +22,20 @@ dp_deploy <- function(project_path = ".", ...) {
   # get daap content and info
   conf <- dpconf_get(project_path = project_path)
   dlog <- get_dlog(project_path = project_path)
-  d <- object_read(project_path = project_path)
+  # get the data object file type
+  type <- fs::dir_ls(file.path(project_path,'output_files/'), recurse = T, regexp = 'data_object') |> 
+      tools::file_ext() |> 
+      tolower()
+  d <- object_read(project_path, type)
 
   dp_deployCore(
     conf = conf, project_path = project_path, d = d, dlog = dlog,
-    git_info = git_info, ...
+    git_info = git_info, type = type, ...
   )
 }
 
-object_read <- function(project_path){
-  type = fs::dir_ls(file.path(project_path,'output_files/'), recurse = T, regexp = 'data_object') |> tools::file_ext() |> tolower()
+object_read <- function(project_path, type){
+  type = rlang::arg_match0(type, c('rds', 'qs'))
   switch(type, 
   rds = readRDS(file = glue::glue("{project_path}/output_files/RDS_format/data_object.RDS")),
   qs = read_qs(project_path)
@@ -52,15 +56,13 @@ read_qs <- function(path){
 #' Reason: With S3 generic methods, function calls as defaults parameters are
 #' not recognized as the class of the object they return
 #' @keywords internal
-dp_deployCore <- function(conf, project_path, d, dlog, git_info, ...) {
+dp_deployCore <- function(conf, project_path, d, dlog, git_info, type, ...) {
   ellipsis::check_dots_used()
   UseMethod("dp_deployCore", object = conf)
 }
 
-
-
 #' @keywords internal
-dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
+dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info, type, 
                                    verbose = F, ...) {
   if (verbose) {
     print(glue::glue("Deploying to S3 remote"))
@@ -94,6 +96,7 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
 
   pins::pin_write(
     x = d,
+    type = type,
     name = as.character(attr(d, "dp_name")),
     board = board,
     description = as.character(attr(d, "branch_description"))
@@ -106,7 +109,7 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info,
 }
 
 #' @keywords internal
-dp_deployCore.labkey_board <- function(conf, project_path, d, dlog, git_info,
+dp_deployCore.labkey_board <- function(conf, project_path, d, dlog, git_info, type,
                                        verbose = F, ...) {
   if (verbose) {
     print(glue::glue("Deploying to LabKey remote"))
@@ -129,6 +132,7 @@ dp_deployCore.labkey_board <- function(conf, project_path, d, dlog, git_info,
 
   pinsLabkey::pin_write(
     x = d,
+    type = type,
     name = as.character(attr(d, "dp_name")),
     board = board,
     description = as.character(attr(d, "branch_description"))
@@ -142,7 +146,7 @@ dp_deployCore.labkey_board <- function(conf, project_path, d, dlog, git_info,
 
 
 #' @keywords internal
-dp_deployCore.local_board <- function(conf, project_path, d, dlog, git_info,
+dp_deployCore.local_board <- function(conf, project_path, d, dlog, git_info, type, 
                                       verbose = F, ...) {
   if (verbose) {
     print(glue::glue("Deploying to local or mounted drive"))
@@ -157,6 +161,7 @@ dp_deployCore.local_board <- function(conf, project_path, d, dlog, git_info,
 
   pins::pin_write(
     x = d,
+    type = type,
     name = attr(d, "dp_name"),
     board = board_object,
     description = attr(d, "branch_description")
