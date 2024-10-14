@@ -22,16 +22,32 @@ dp_deploy <- function(project_path = ".", ...) {
   # get daap content and info
   conf <- dpconf_get(project_path = project_path)
   dlog <- get_dlog(project_path = project_path)
-  d <- readRDS(file = glue::glue(
-    "{project_path}/output_files/RDS_format/",
-    "data_object.RDS"
-  ))
+  d <- object_read(project_path = project_path)
 
   dp_deployCore(
     conf = conf, project_path = project_path, d = d, dlog = dlog,
     git_info = git_info, ...
   )
 }
+
+object_read <- function(project_path){
+  type = fs::dir_ls(file.path(project_path,'output_files/'), recurse = T, regexp = 'data_object') |> tools::file_ext() |> tolower()
+  switch(type, 
+  rds = readRDS(file = glue::glue("{project_path}/output_files/RDS_format/data_object.RDS"),
+  qs = read_qs(project_path)
+  )
+}
+
+read_qs <- function(path){
+  rlang::check_installed("qs")
+  dataobj_path <- glue::glue(
+    "{project_path}/",
+    "output_files/qs_format/data_object.qs"
+  )
+  qs::qread(dataobj_path)
+  return(dataobj_path)
+}
+
 
 #' The dp_deploy is a wrapper around this.
 #' Reason: With S3 generic methods, function calls as defaults parameters are
