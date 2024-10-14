@@ -35,7 +35,7 @@ object_read <- function(project_path){
   switch(type, 
   rds = readRDS(file = glue::glue("{project_path}/output_files/RDS_format/data_object.RDS"),
   qs = read_qs(project_path)
-  )
+  ))
 }
 
 read_qs <- function(path){
