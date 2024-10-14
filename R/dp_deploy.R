@@ -33,9 +33,9 @@ dp_deploy <- function(project_path = ".", ...) {
 object_read <- function(project_path){
   type = fs::dir_ls(file.path(project_path,'output_files/'), recurse = T, regexp = 'data_object') |> tools::file_ext() |> tolower()
   switch(type, 
-  rds = readRDS(file = glue::glue("{project_path}/output_files/RDS_format/data_object.RDS"),
+  rds = readRDS(file = glue::glue("{project_path}/output_files/RDS_format/data_object.RDS")),
   qs = read_qs(project_path)
-  ))
+  )
 }
 
 read_qs <- function(path){
