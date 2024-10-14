@@ -45,7 +45,6 @@ read_qs <- function(path){
     "output_files/qs_format/data_object.qs"
   )
   qs::qread(dataobj_path)
-  return(dataobj_path)
 }
 
 
