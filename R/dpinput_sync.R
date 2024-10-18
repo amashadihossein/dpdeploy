@@ -37,7 +37,9 @@ dpinput_sync <- function(conf, input_map, verbose = F, type = "rds", ...) {
     return(input_map$input_obj)
   }
 
-  input_map <- purrr::map(.x = input_map$input_obj, .f = function(input_i, type) {
+  input_map <- purrr::pmap(
+  list(input_i = input_map$input_obj, type = rep(type, length(input_map$input_obj))),
+  function(input_i, type) {
     if (!input_i$metadata$id %in% skip_sync) {
       input_i$metadata$description <- to_description(input_i = input_i)
       input_i$metadata$pin_version <-
