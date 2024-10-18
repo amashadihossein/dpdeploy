@@ -195,7 +195,7 @@ pathnames_reroot <- function(pathnames, new_root = "input_files") {
 }
 
 #' @keywords internal
-sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F, type = "rds",
+sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F, type = type,
                          verbose) {
   synced_map <- purrr::map(.x = input_map, .f = function(input_i) {
     if (board_object$board == "pins_board_labkey") {
