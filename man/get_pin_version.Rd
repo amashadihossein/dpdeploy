@@ -4,7 +4,7 @@
 \alias{get_pin_version}
 \title{Get Pins Version Pre Deploy}
 \usage{
-get_pin_version(d, pin_name, pin_description)
+get_pin_version(d, pin_name, pin_description, type)
 }
 \arguments{
 \item{d}{data object}

@@ -254,10 +254,11 @@ get_dlog <- function(project_path) {
 #' @param d data object
 #' @param pin_name what the pin will be named. For data products, it is encoded in dp_param
 #' @param pin_description what the pin description will be. For data products, it is encoded in dp_params
+#' @type Data format
 #' @return a character version
 #' @importFrom dplyr .data
 #' @keywords internal
-get_pin_version <- function(d, pin_name, pin_description) {
+get_pin_version <- function(d, pin_name, pin_description, type) {
   withr::local_options(list(pins.quiet = TRUE))
   pin_name <- as.character(pin_name)
   pin_description <- as.character(pin_description)
@@ -274,7 +275,8 @@ get_pin_version <- function(d, pin_name, pin_description) {
     x = d,
     name = pin_name,
     board = temp_board_folder,
-    description = pin_description
+    description = pin_description,
+    type = type
   )
 
   pin_version <- pins::pin_versions(
