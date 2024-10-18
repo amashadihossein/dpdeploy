@@ -3,11 +3,12 @@
 #' @param conf environment containing all config.R variables. See `dpconf_get()`
 #' @param input_map object containing all input data to be synced. See `map_input()`
 #' @param verbose T/F
+#' @param type data format to pin input data to remote, default: rds
 #' @param ... other parameters e.g. verbose = T
 #' @return synced_map this is input_map with sync status added to metadata
 #' @importFrom dplyr .data
 #' @export
-dpinput_sync <- function(conf, input_map, verbose = F, ...) {
+dpinput_sync <- function(conf, input_map, verbose = F, type = "rds", ...) {
   # grab rewrite_ok if passed in ...
   args <- list(...)
   rewrite_ok <- args$rewrite_ok
@@ -56,6 +57,7 @@ dpinput_sync <- function(conf, input_map, verbose = F, ...) {
     board_object = board,
     skip_sync = skip_sync,
     rewrite_ok = rewrite_ok,
+    type = type, 
     verbose = verbose
   )
 
@@ -193,7 +195,7 @@ pathnames_reroot <- function(pathnames, new_root = "input_files") {
 }
 
 #' @keywords internal
-sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
+sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F, type = "rds",
                          verbose) {
   synced_map <- purrr::map(.x = input_map, .f = function(input_i) {
     if (board_object$board == "pins_board_labkey") {
@@ -241,6 +243,7 @@ sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
       if (board_object$board == "pins_board_labkey") {
         tmp_pind <- try(pinsLabkey::pin_write(
           x = input_i$data,
+          type = type,
           name = input_i$metadata$name,
           board = board_object,
           description = input_i$metadata$description
@@ -248,6 +251,7 @@ sync_iterate <- function(input_map, board_object, skip_sync, rewrite_ok = F,
       } else {
         tmp_pind <- try(pins::pin_write(
           x = input_i$data,
+          type = type,
           name = input_i$metadata$name,
           board = board_object,
           description = input_i$metadata$description
