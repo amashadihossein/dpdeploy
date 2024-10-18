@@ -23,8 +23,8 @@ dp_deploy <- function(project_path = ".", ...) {
   conf <- dpconf_get(project_path = project_path)
   dlog <- get_dlog(project_path = project_path)
   # get the data object file type
-  type <- fs::dir_ls(file.path(project_path,'output_files/'), recurse = T, regexp = 'data_object') |> 
-      tools::file_ext() |> 
+  type <- fs::dir_ls(file.path(project_path,'output_files/'), recurse = T, regexp = 'data_object') %>% 
+      tools::file_ext() %>%
       tolower()
   d <- object_read(project_path, type)
 
