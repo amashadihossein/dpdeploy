@@ -35,10 +35,12 @@ dp_deploy <- function(project_path = ".", ...) {
 }
 
 object_read <- function(project_path, type){
-  type = rlang::arg_match0(type, c('rds', 'qs'))
+  type = rlang::arg_match0(type, c('rds', 'qs','arrow', 'parquet'))
   switch(type, 
   rds = readRDS(file = glue::glue("{project_path}/output_files/RDS_format/data_object.RDS")),
-  qs = read_qs(project_path)
+  qs = read_qs(project_path), 
+  arrow = read_arrow(project_path),
+  parquet = read_parquet(project_path)
   )
 }
 
@@ -51,6 +53,23 @@ read_qs <- function(path){
   qs::qread(dataobj_path)
 }
 
+read_arrow <- function(path){
+  rlang::check_installed("arrow")
+  dataobj_path <- glue::glue(
+    "{path}/",
+    "output_files/arrow_format/data_object.arrow"
+  )
+  arrow::read_feather(dataobj_path)
+}
+
+read_parquet <- function(path){
+  rlang::check_installed("nanoparquet")
+  dataobj_path <- glue::glue(
+    "{path}/",
+    "output_files/parquet_format/data_object.parquet"
+  )
+  arrow::read_parquet(dataobj_path)
+}
 
 #' The dp_deploy is a wrapper around this.
 #' Reason: With S3 generic methods, function calls as defaults parameters are

@@ -28,7 +28,9 @@ Imports:
     withr,
     yaml
 Suggests: 
+    arrow,
     covr,
+    nanoparquet,
     qs,
     roxygen2
 Encoding: UTF-8
