@@ -23,15 +23,19 @@ dp_deploy <- function(project_path = ".", ...) {
   conf <- dpconf_get(project_path = project_path)
   dlog <- get_dlog(project_path = project_path)
   # get the data object file type
-  type <- fs::dir_ls(file.path(project_path,'output_files/'), recurse = T, regexp = 'data_object') %>% 
-      tools::file_ext() %>%
-      tolower()
+  type <- detect_type(project_path)
   d <- object_read(project_path, type)
 
   dp_deployCore(
     conf = conf, project_path = project_path, d = d, dlog = dlog,
     git_info = git_info, type = type, ...
   )
+}
+
+detect_type = function(project_path){
+  fs::dir_ls(file.path(project_path,'output_files/'), recurse = T, regexp = 'data_object') %>% 
+      tools::file_ext() %>%
+      tolower()
 }
 
 object_read <- function(project_path, type){
