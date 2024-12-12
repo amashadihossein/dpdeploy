@@ -254,10 +254,11 @@ get_dlog <- function(project_path) {
 #' @param d data object
 #' @param pin_name what the pin will be named. For data products, it is encoded in dp_param
 #' @param pin_description what the pin description will be. For data products, it is encoded in dp_params
+#' @param type File type used to save the data product, default RDS
 #' @return a character version
 #' @importFrom dplyr .data
 #' @keywords internal
-get_pin_version <- function(d, pin_name, pin_description) {
+get_pin_version <- function(d, pin_name, pin_description, type = 'rds') {
   withr::local_options(list(pins.quiet = TRUE))
   pin_name <- as.character(pin_name)
   pin_description <- as.character(pin_description)
@@ -272,6 +273,7 @@ get_pin_version <- function(d, pin_name, pin_description) {
 
   pins::pin_write(
     x = d,
+    type = type,
     name = pin_name,
     board = temp_board_folder,
     description = pin_description

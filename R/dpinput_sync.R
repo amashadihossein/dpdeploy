@@ -44,7 +44,8 @@ dpinput_sync <- function(conf, input_map, verbose = F, type = "rds", ...) {
         get_pin_version(
           d = input_i$data,
           pin_name = input_i$metadata$name,
-          pin_description = input_i$metadata$description
+          pin_description = input_i$metadata$description, 
+          type = type
         )
     }
     input_i
