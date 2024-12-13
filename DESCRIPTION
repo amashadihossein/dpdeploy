@@ -9,7 +9,6 @@ Description: An R package to manage deployment of data product to remote.
 License: GPL-3
 BugReports: https://github.com/amashadihossein/dpdeploy/issues
 Imports: 
-    aws.s3,
     aws.signature,
     cli,
     dpbuild (>= 0.2.0),

@@ -1,13 +1,31 @@
 #' @importFrom dpbuild dpconf_get
+#' @title Get data product config information
+#' @description Reads in data product config file `.daap/daap_config.yaml`and
+#' returns config details
+#' @details This function reads in the yaml config as a list. In the process, it
+#' hydrates any expression for `board_params` and `creds`. Make sure environment
+#' variables declared in dried functions are set prior to calling `dpconf_get`.
+#' @param project_path path to project folder
+#' @return a list dpconf
 #' @export
 #' @name dpconf_get
 dpbuild::dpconf_get
 
 #' @importFrom dpbuild is_valid_dp_repository
+#' @title Determine if valid dp repository
+#' @description Looks at the path, runs `dp_repository_check` and returns TRUE
+#' if all TRUE
+#' @details All diagnostic tests to check validity of dp repository are run
+#' regardless of choice of checks. Checks determines what subset is considered
+#' in return T/F.
+#' @param path Path to be evaluated
+#' @param checks any combination of c("all","git","dp","renv","branch"). default
+#' is all.
+#' @param verbose If TRUE, it will print which tests passed/failed
+#' @return TRUE or FALSE
 #' @export
 #' @name is_valid_dp_repository
 dpbuild::is_valid_dp_repository
-
 
 #' @title Validate git info for deploy
 #' @description Validates and extracts gitinfo per deploy requirements
