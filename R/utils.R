@@ -184,6 +184,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
     if (board_object$board == "pins_board_labkey") {
       pinsLabkey::pin_write(
         x = dpboard_log,
+        type = 'rds',
         name = "dpboard-log",
         board = board_object,
         description = "Data Product Log"
@@ -191,6 +192,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
     } else {
       pins::pin_write(
         x = dpboard_log,
+        type = 'rds',
         name = "dpboard-log",
         board = board_object,
         description = "Data Product Log"
@@ -236,6 +238,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
   if (board_object$board == "pins_board_labkey") {
     pinsLabkey::pin_write(
       x = dpboard_log,
+      type = 'rds',
       name = "dpboard-log",
       board = board_object,
       description = "Data Product Log"
@@ -243,6 +246,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
   } else {
     pins::pin_write(
       x = dpboard_log,
+      type = 'rds',
       name = "dpboard-log",
       board = board_object,
       description = "Data Product Log"
