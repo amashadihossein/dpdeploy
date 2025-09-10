@@ -6,6 +6,8 @@
 \alias{dpdeploy-package}
 \title{dpdeploy: A package to manage deployment of data products}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 An R package to manage deployment of data product to remote.
 }
 \seealso{
