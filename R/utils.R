@@ -1,13 +1,31 @@
 #' @importFrom dpbuild dpconf_get
+#' @title Get data product config information
+#' @description Reads in data product config file `.daap/daap_config.yaml`and
+#' returns config details
+#' @details This function reads in the yaml config as a list. In the process, it
+#' hydrates any expression for `board_params` and `creds`. Make sure environment
+#' variables declared in dried functions are set prior to calling `dpconf_get`.
+#' @param project_path path to project folder
+#' @return a list dpconf
 #' @export
 #' @name dpconf_get
 dpbuild::dpconf_get
 
 #' @importFrom dpbuild is_valid_dp_repository
+#' @title Determine if valid dp repository
+#' @description Looks at the path, runs `dp_repository_check` and returns TRUE
+#' if all TRUE
+#' @details All diagnostic tests to check validity of dp repository are run
+#' regardless of choice of checks. Checks determines what subset is considered
+#' in return T/F.
+#' @param path Path to be evaluated
+#' @param checks any combination of c("all","git","dp","renv","branch"). default
+#' is all.
+#' @param verbose If TRUE, it will print which tests passed/failed
+#' @return TRUE or FALSE
 #' @export
 #' @name is_valid_dp_repository
 dpbuild::is_valid_dp_repository
-
 
 #' @title Validate git info for deploy
 #' @description Validates and extracts gitinfo per deploy requirements
@@ -166,6 +184,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
     if (board_object$board == "pins_board_labkey") {
       pinsLabkey::pin_write(
         x = dpboard_log,
+        type = 'rds',
         name = "dpboard-log",
         board = board_object,
         description = "Data Product Log"
@@ -173,6 +192,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
     } else {
       pins::pin_write(
         x = dpboard_log,
+        type = 'rds',
         name = "dpboard-log",
         board = board_object,
         description = "Data Product Log"
@@ -218,6 +238,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
   if (board_object$board == "pins_board_labkey") {
     pinsLabkey::pin_write(
       x = dpboard_log,
+      type = 'rds',
       name = "dpboard-log",
       board = board_object,
       description = "Data Product Log"
@@ -225,6 +246,7 @@ dpboardlog_update <- function(conf, git_info, dlog = NULL,
   } else {
     pins::pin_write(
       x = dpboard_log,
+      type = 'rds',
       name = "dpboard-log",
       board = board_object,
       description = "Data Product Log"
@@ -254,10 +276,11 @@ get_dlog <- function(project_path) {
 #' @param d data object
 #' @param pin_name what the pin will be named. For data products, it is encoded in dp_param
 #' @param pin_description what the pin description will be. For data products, it is encoded in dp_params
+#' @param type File type used to save the data product, default RDS
 #' @return a character version
 #' @importFrom dplyr .data
 #' @keywords internal
-get_pin_version <- function(d, pin_name, pin_description) {
+get_pin_version <- function(d, pin_name, pin_description, type = 'rds') {
   withr::local_options(list(pins.quiet = TRUE))
   pin_name <- as.character(pin_name)
   pin_description <- as.character(pin_description)
@@ -272,6 +295,7 @@ get_pin_version <- function(d, pin_name, pin_description) {
 
   pins::pin_write(
     x = d,
+    type = type,
     name = pin_name,
     board = temp_board_folder,
     description = pin_description

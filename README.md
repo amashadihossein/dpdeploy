@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# dpdeploy
+# dpdeploy <a href="https://amashadihossein.github.io/dpdeploy/"><img src="man/figures/logo.png" align="right" height="139" alt="dpdeploy website" /></a>
 
 <!-- badges: start -->
 

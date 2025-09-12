@@ -1,3 +1,7 @@
+# dpdeploy 0.4.0
+
+* Enable saving data objects in qs format via the "type" param in `dpinput_sync()`. Note that `dp_deploy()` now detects type automatically. 
+
 # dpdeploy 0.3.0
 
 * Removed references to `board_alias` (#34) as this argument is now deprecated with `pinsLabkey` v0.2.0

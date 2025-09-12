@@ -1,6 +1,6 @@
 Package: dpdeploy
 Title: A package to manage deployment of data products
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: c(
     person(given = "Afshin", family = "Mashadi-Hossein", email ="amashadihossein@gmail.com", role = c("aut", "cre")),
     person(given = "Yue", family = "Jiang", email = "rivehill@gmail.com", role = "aut")
@@ -9,7 +9,6 @@ Description: An R package to manage deployment of data product to remote.
 License: GPL-3
 BugReports: https://github.com/amashadihossein/dpdeploy/issues
 Imports: 
-    aws.s3,
     aws.signature,
     cli,
     dpbuild (>= 0.2.0),
@@ -29,10 +28,13 @@ Imports:
     yaml
 Suggests: 
     covr,
-    roxygen2
+    qs,
+    roxygen2,
+    testthat (>= 3.0.0)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Remotes: 
     github::camorosi/pinsLabkey
+Config/testthat/edition: 3

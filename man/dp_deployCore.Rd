@@ -6,7 +6,7 @@
 Reason: With S3 generic methods, function calls as defaults parameters are
 not recognized as the class of the object they return}
 \usage{
-dp_deployCore(conf, project_path, d, dlog, git_info, ...)
+dp_deployCore(conf, project_path, d, dlog, git_info, type, ...)
 }
 \description{
 The dp_deploy is a wrapper around this.
