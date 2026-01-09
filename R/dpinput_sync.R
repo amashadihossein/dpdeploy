@@ -105,7 +105,7 @@ init_board.s3_board <- function(conf) {
   }
 
   pins::board_s3(
-    prefix = "dpinput/",
+    prefix = paste0(conf$board_params$prefix, "dpinput/"),
     bucket = conf$board_params$bucket_name,
     region = conf$board_params$region,
     access_key = aws_creds$key,

@@ -99,7 +99,7 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info, type,
   }
 
   board <- pins::board_s3(
-    prefix = "daap/",
+    prefix = paste0(conf$board_params$prefix, "daap/"),
     bucket = conf$board_params$bucket_name,
     region = conf$board_params$region,
     access_key = aws_creds$key,
