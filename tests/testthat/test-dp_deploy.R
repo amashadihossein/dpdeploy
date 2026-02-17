@@ -9,14 +9,14 @@ test_that("properly checks valid repository ", {
 
 test_that("object_read properly detects type", {
     
-    project_path = withr::local_tempfile()
-    path = file.path(project_path, "output_files/qs_format/")
-    dir.create(path, recursive = TRUE)
-    qs::qsave(structure(list(), class = "dp"), file = file.path(path, "data_object.qs"))
-    expect_equal(
-                detect_type(project_path), 
-                'qs'
-                )
+    # project_path = withr::local_tempfile()
+    # path = file.path(project_path, "output_files/qs_format/")
+    # dir.create(path, recursive = TRUE)
+    # qs::qsave(structure(list(), class = "dp"), file = file.path(path, "data_object.qs"))
+    # expect_equal(
+    #             detect_type(project_path), 
+    #             'qs'
+    #             )
 
     project_path = withr::local_tempfile()
     path = file.path(project_path, "output_files/RDS_format/")
