@@ -1,3 +1,7 @@
+# dpdeploy 0.5.0
+
+* Add s3 "prefix" option so that a subfolder can be used for s3 daaps
+
 # dpdeploy 0.4.0
 
 * Enable saving data objects in qs format via the "type" param in `dpinput_sync()`. Note that `dp_deploy()` now detects type automatically. 
