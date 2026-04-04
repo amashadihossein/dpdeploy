@@ -9,7 +9,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/amashadihossein/dpdeploy/blob/dev/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/amashadihossein/dpdeploy/blob/main/DESCRIPTION)
 
 Mashadi-Hossein A, Jiang Y (2026). *dpdeploy: A package to manage
 deployment of data products*. R package version 0.5.0.
