@@ -1,0 +1,47 @@
+# dpdeploy
+
+The goal of `dpdeploy` is to simplify and standardize how a data product
+is deployed to a remote data platform or repository.
+
+## Installation
+
+For released version
+
+``` r
+remotes::install_github("amashadihossein/dpdeploy")
+```
+
+For dev version
+
+``` r
+remotes::install_github("amashadihossein/dpdeploy", ref = "dev")
+```
+
+## Example
+
+Assuming you have properly configured your project and workflow using
+`dpbuild`, only a single call is needed to deploy.
+
+``` r
+dpdeploy::dp_deploy(project_path = "<PATH_TO_PROJECT>")
+```
+
+## Related documentation
+
+- `daapr`: <https://amashadihossein.github.io/daapr/>
+- `dpbuild`: <https://amashadihossein.github.io/dpbuild/>
+- `dpi`: <https://amashadihossein.github.io/dpi/>
+
+# Package index
+
+## All functions
+
+- [`dp_deploy()`](https://amashadihossein.github.io/dpdeploy/reference/dp_deploy.md)
+  : Deploy data product
+- [`dpconf_get()`](https://amashadihossein.github.io/dpdeploy/reference/dpconf_get.md)
+  : Get data product config information
+- [`dpinput_sync()`](https://amashadihossein.github.io/dpdeploy/reference/dpinput_sync.md)
+  : Sync Input Data to Remote
+- [`is_valid_dp_repository()`](https://amashadihossein.github.io/dpdeploy/reference/is_valid_dp_repository.md)
+  : Determine if valid dp repository
+
