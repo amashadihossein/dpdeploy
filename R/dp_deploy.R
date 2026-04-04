@@ -45,24 +45,24 @@ detect_type = function(project_path){
 #' @description read the output data object, for now only rds and qs are supported
 #' @noRd 
 object_read <- function(project_path, type){
-  type = rlang::arg_match0(type, c('rds', 'qs'))
+  type = rlang::arg_match0(type, c('rds')) #, 'qs'))
   switch(type, 
-  rds = readRDS(file = glue::glue("{project_path}/output_files/RDS_format/data_object.RDS")),
-  qs = read_qs(project_path)
+  rds = readRDS(file = glue::glue("{project_path}/output_files/RDS_format/data_object.RDS")) #,
+  # qs = read_qs(project_path)
   )
 }
 
-#' @title Reas qs object
-#' @description Read in qs object
-#' @noRd  
-read_qs <- function(path){
-  rlang::check_installed("qs")
-  dataobj_path <- glue::glue(
-    "{path}/",
-    "output_files/qs_format/data_object.qs"
-  )
-  qs::qread(dataobj_path)
-}
+# #' @title Reas qs object
+# #' @description Read in qs object
+# #' @noRd  
+# read_qs <- function(path){
+#   rlang::check_installed("qs")
+#   dataobj_path <- glue::glue(
+#     "{path}/",
+#     "output_files/qs_format/data_object.qs"
+#   )
+#   qs::qread(dataobj_path)
+# }
 
 
 #' The dp_deploy is a wrapper around this.
@@ -99,7 +99,7 @@ dp_deployCore.s3_board <- function(conf, project_path, d, dlog, git_info, type,
   }
 
   board <- pins::board_s3(
-    prefix = "daap/",
+    prefix = paste0(ifelse(is.na(conf$board_params$prefix), "", conf$board_params$prefix), "daap/"),
     bucket = conf$board_params$bucket_name,
     region = conf$board_params$region,
     access_key = aws_creds$key,
